@@ -469,14 +469,16 @@ const threshold = () => 88 - Number(sensEl.value) * .56;  // sensitivity 50 -> l
 /* ------------------------------------------------------------ game state */
 const G = { started: false, paused: false, ended: false, total: 300, left: 300, quiet: 0, loudMs: 0, scaredUntil: 0, unlocked: 0, extra: 0, talk: false, talkSince: 0, shh: 0, keyNoise: false, pearls: 0, pearlT: 0, calibUntil: 0, calib: [] };
 const PEARL_EVERY = 30, PEARL_MAX = 20; let flying = [];
-const GRACE = 900;                                         // ms of steady noise before the fish get scared (a cough or a door does not count)
+const GRACE = 500;                                         // ms of steady noise before the fish get scared (a single cough or a door bang does not count)
+const PEAK = 16, PEAK_MS = 150;                            // a shout (16 points over the limit for 150 ms) scares them at once
 const $ = id => document.getElementById(id);
 function setTimer() { const m = Math.floor(G.left / 60), s = Math.floor(G.left % 60); $('timer').textContent = toAr(m + ':' + String(s).padStart(2, '0')); }
 let toastT = 0;
 function toast(msg, warn) { const t = $('toast'); t.textContent = msg; t.classList.toggle('warn', !!warn); t.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('show'), 2600); }
 function status(msg) { const s = $('status'); if (s.textContent !== msg) s.textContent = msg; }
 function resetGame() {
-  Object.assign(G, { started: false, paused: false, ended: false, left: G.total, quiet: 0, loudMs: 0, scaredUntil: 0, unlocked: 0, extra: 0, pearls: 0, pearlT: 0 }); flying = [];
+  Object.assign(G, { started: false, paused: false, ended: false, left: G.total, quiet: 0, loudMs: 0, peakMs: 0, scaredUntil: 0, unlocked: 0, extra: 0, pearls: 0, pearlT: 0, talk: false }); flying = [];
+  const tb = document.getElementById('talk'); if (tb) tb.classList.remove('on');
   mobs = CAST.map(s => makeMob(s)); setTimer(); $('start').textContent = 'ابدأ'; $('done').classList.add('hide'); status('اضغطوا «ابدأ»… والبحر ينتظركم');
 }
 function scare() {
@@ -520,14 +522,25 @@ function drawNecklace(dt) {
   flying = flying.filter(p => !p.done);
 }
 function finish() {
-  G.ended = true; G.started = false; const n = G.unlocked + G.extra;
+  G.ended = true; G.started = false; G.talk = false; $('talk').classList.remove('on'); const n = G.unlocked + G.extra;
   $('donePearls').textContent = G.pearls ? 'جمعتوا ' + toAr(G.pearls) + ' لولو في عقد الصف 🦪' : 'المرة الياية نجمع لولو أكثر 🦪';
   $('doneCount').textContent = 'وطلع لكم ' + toAr(n) + ' من أهل البحر 🌊'; $('done').classList.remove('hide'); $('start').textContent = 'ابدأ';
 }
 
 /* ------------------------------------------------------------ main loop */
 let last = performance.now();
+let SHEET = location.hash === '#sheet';
+const SHEET_IDS = ['safi', 'hamour', 'crab', 'star', 'jelly', 'turtle', 'kanad', 'oyster', 'dolphin', 'dhow', 'dugong', 'falcon', 'whaleshark', 'oysterShut', 'x_blue'];
+function grow(dt) {
+  G.quiet += dt;
+  const returning = mobs.some(m => m.state === 'hidden' && m.everSeen);
+  const gap = returning ? 1.3 : (G.unlocked === 0 ? 2 : 4.5);
+  if (G.quiet >= gap) { G.quiet = 0; nextAppear(); }
+}
 function frame(now) {
+  if (SHEET) { ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
+    SHEET_IDS.forEach((id, i) => { const sp = sprites[id]; const cw = W / 5, ch = H / 3, cx = (i % 5) * cw + cw / 2, cy = Math.floor(i / 5) * ch + ch / 2; const k = Math.min((cw - 30) / sp.w, (ch - 30) / sp.h); ctx.drawImage(sp.c, cx - sp.w * k / 2, cy - sp.h * k / 2, sp.w * k, sp.h * k); });
+    return; }
   const dt = Math.min(.05, (now - last) / 1000); last = now;
   const raw = readLevel(); level = raw > level ? level * .45 + raw * .55 : level * .9 + raw * .1;
   const thr = threshold();
@@ -537,19 +550,20 @@ function frame(now) {
   if (G.started && !G.paused && !G.ended) {
     G.left -= dt; if (G.left <= 0) { G.left = 0; setTimer(); finish(); } else setTimer();
     const noisy = !G.talk && ((micOn && level >= thr) || G.keyNoise);
-    if (noisy) G.loudMs += dt * 1000; else G.loudMs = Math.max(0, G.loudMs - dt * 2000);
+    if (noisy) G.loudMs += dt * 1000; else G.loudMs = Math.max(0, G.loudMs - dt * 1000);
+    const shout = !G.talk && micOn && level >= thr + PEAK;
+    G.peakMs = shout ? (G.peakMs || 0) + dt * 1000 : 0;
+    if (G.peakMs >= PEAK_MS) G.loudMs = GRACE + 1;
     if (now < G.shh) { G.loudMs = GRACE + 1; }
     const scared = now < G.scaredUntil;
     if (G.loudMs > GRACE) { if (!scared) scare(); else G.scaredUntil = now + 1600; G.quiet = 0; status('شششش! الأسماك خافت وتخبّت 🫣'); }
     else if (scared) { G.quiet = 0; status('شششش… الأسماك تنتظر الهدوء'); }
-    else if (G.talk) { status('🎤 وقت الشرح… البحر ما يسمع'); }
-    else if (G.loudMs > 120) { fright = true; status('انتبهوا… الأسماك بتخاف! 👀'); }
+    else if (G.talk) { status('🎤 وقت الشرح… البحر ما يسمع'); grow(dt); }   // the class is listening: fish keep coming (pearls wait for real quiet)
+    else if (G.loudMs > 40) { fright = true; status('انتبهوا… الأسماك بتخاف! 👀'); }
     else {
-      G.quiet += dt; G.pearlT += dt; status('البحر هادي… 🐠');
+      G.pearlT += dt; status('البحر هادي… 🐠');
       if (G.pearlT >= PEARL_EVERY && G.pearls < PEARL_MAX) { G.pearlT = 0; earnPearl(); }
-      const returning = mobs.some(m => m.state === 'hidden' && m.everSeen);
-      const gap = returning ? 1.3 : (G.unlocked === 0 ? 2 : 4.5);
-      if (G.quiet >= gap) { G.quiet = 0; nextAppear(); }
+      grow(dt);
     }
   }
   for (const m of mobs) stepMob(m, dt, fright);
@@ -600,7 +614,15 @@ $('reset').onclick = () => resetGame();
 $('plus').onclick = () => { if (G.started) return; G.total = Math.min(30 * 60, G.total + 60); G.left = G.total; setTimer(); };
 $('minus').onclick = () => { if (G.started) return; G.total = Math.max(60, G.total - 60); G.left = G.total; setTimer(); };
 const TALK_MAX = 180;
-function setTalk(on) { G.talk = on; G.talkSince = performance.now(); $('talk').classList.toggle('on', on); if (!on) G.loudMs = 0; if (on) toast('🎤 وقت الشرح… البحر ما يسمع'); }
+function setTalk(on) {
+  // pressing «وقت الشرح» while paused (or before starting) also runs the session, so the sea keeps filling
+  if (on && G.ended) return;                               // nothing to explain over the end card
+  if (on) {
+    if (!G.started) { begin().then(() => setTalk(true)); return; }
+    if (G.paused) { G.paused = false; $('start').textContent = 'وقّف'; }
+  }
+  G.talk = on; G.talkSince = performance.now(); $('talk').classList.toggle('on', on); if (!on) G.loudMs = 0; if (on) toast('🎤 وقت الشرح… البحر ما يسمع');
+}
 $('talk').onclick = () => setTalk(!G.talk);
 $('calib').onclick = async () => { const ok = await startMic(); $('micState').textContent = ok ? 'المايك شغّال 🎙️' : 'بدون مايك'; if (!ok) { toast('ما قدرنا نشغّل المايك… اسمحوا للمتصفح يستخدمه', true); return; } G.calib = []; G.calibUntil = performance.now() + 3000; toast('خلّوا الصف هادي ٣ ثواني… 🤫'); };
 $('shh').onclick = () => { if (G.started) G.shh = performance.now() + 200; };
@@ -612,6 +634,7 @@ let rz = 0; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout
 try { const v = localStorage.getItem('bahr_sens'); if (v !== null) sensEl.value = v; } catch (e) {}
 sensEl.oninput = () => { try { localStorage.setItem('bahr_sens', sensEl.value); } catch (e) {} };
 
+if (location.hash === '#sheet') { document.querySelectorAll('.bar,.meter,.status,.toast,.overlay').forEach(e => e.style.display = 'none'); document.documentElement.style.background = document.body.style.background = 'transparent'; }
 resetGame(); layout(); requestAnimationFrame(frame);
 if (location.hash.startsWith('#demo')) { $('intro').classList.add('hide'); G.started = true; $('start').textContent = 'وقّف';
   if (location.hash === '#demo-all') { for (let i = 0; i < 19; i++) nextAppear(); for (let k = 0; k < 240; k++) for (const m of mobs) stepMob(m, .05, false); G.pearls = 3; G.pearlT = 18; }
