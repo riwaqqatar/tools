@@ -50,6 +50,32 @@ input[type=range]{width:150px;direction:ltr;accent-color:var(--teal)}
 .hide{display:none!important}
 .big{font-family:RB;font-size:64px;color:var(--maroon);line-height:1.2}
 @media (max-width:900px){.brand p{display:none}.timer{font-size:32px;min-width:90px}.meter{width:240px}}
+/* phones (14 Nov 2026: a teacher could not get past the instructions on her phone) */
+.overlay{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:14px 0}
+.card{margin:auto}
+@media (max-width:700px),(max-height:560px){
+  .card{padding:16px 18px 0;border-radius:18px;width:calc(100% - 24px)}
+  .card h2{font-size:28px}.card h3{font-size:18px;margin:10px 0 4px}
+  .card li{font-size:15px;line-height:1.55}.card .small{font-size:12.5px;margin-top:8px}
+  .card .go{position:sticky;bottom:0;background:var(--cream);padding:10px 0 14px;margin-top:8px}
+  .card .go .btn{font-size:18px;padding:9px 22px}
+  .big{font-size:44px}
+  .bar{flex-wrap:wrap;gap:6px;padding:6px 8px}
+  .brand img{height:28px}.brand h1{font-size:20px}
+  .timer{font-size:26px;min-width:66px}
+  .btn{font-size:13px;padding:5px 8px;border-radius:10px}.btn.round{width:30px;height:30px;font-size:17px}
+  .toast{font-size:20px;top:120px;padding:8px 16px}
+}
+@media (max-width:700px){
+  .tools{width:100%;justify-content:center;gap:5px}
+  .meter{left:8px;right:8px;width:auto;bottom:8px;padding:6px 10px;font-size:12px}
+  .status{bottom:84px;font-size:16px;padding:6px 14px;white-space:normal;width:max-content;max-width:92vw;text-align:center}
+}
+@media (max-height:560px) and (min-width:701px){
+  .meter{width:210px;bottom:6px;left:6px;padding:4px 8px;font-size:11px}
+  input[type=range]{width:100px}
+  .status{bottom:8px;font-size:15px;padding:5px 14px}
+}
 </style>
 </head>
 <body>
@@ -626,7 +652,10 @@ function setTalk(on) {
 $('talk').onclick = () => setTalk(!G.talk);
 $('calib').onclick = async () => { const ok = await startMic(); $('micState').textContent = ok ? 'المايك شغّال 🎙️' : 'بدون مايك'; if (!ok) { toast('ما قدرنا نشغّل المايك… اسمحوا للمتصفح يستخدمه', true); return; } G.calib = []; G.calibUntil = performance.now() + 3000; toast('خلّوا الصف هادي ٣ ثواني… 🤫'); };
 $('shh').onclick = () => { if (G.started) G.shh = performance.now() + 200; };
-$('full').onclick = () => { if (!document.fullscreenElement) document.documentElement.requestFullscreen && document.documentElement.requestFullscreen(); else document.exitFullscreen(); };
+{ const de = document.documentElement, req = de.requestFullscreen || de.webkitRequestFullscreen;   // iPhone has no fullscreen API: hide the button there
+  if (!req) $('full').classList.add('hide');
+  $('full').onclick = () => { const on = document.fullscreenElement || document.webkitFullscreenElement;
+    if (!on) req && req.call(de); else (document.exitFullscreen || document.webkitExitFullscreen).call(document); }; }
 document.querySelectorAll('button').forEach(b => b.addEventListener('click', () => b.blur()));
 addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); if (!e.repeat && e.target.tagName !== 'INPUT') setTalk(!G.talk); } if (e.code === 'KeyN') G.keyNoise = true; });
 addEventListener('keyup', e => { if (e.code === 'KeyN') G.keyNoise = false; });
