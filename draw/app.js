@@ -33,7 +33,8 @@ const T = {
       <li><b>Grade 2:</b> to 100 with tens, carrying and borrowing, three numbers and word problems.</li>
       <li><b>Grade 3:</b> times tables, division, missing factors and word problems.</li></ul>
       <p>The level goes up by itself after 6 right answers in a row. Questions are made on the device, so it works offline on a projector or a class tablet.</p>
-      <p>Free · no sign-up · no ads · nothing about the child leaves the device.</p>`,
+      <p>Free · no sign-up · no ads · nothing about the child leaves the device.</p>
+      <p><a href="https://riwaqqatar.github.io/tools/draw/hal-warsim.html" download="Solve and Draw.html" style="display:inline-block;margin-top:6px;background:var(--yellow);color:var(--ink);border:4px solid var(--ink);border-radius:999px;padding:10px 20px">⬇ Download the file (works with no internet)</a></p>`,
   },
   ar: {
     navAlbum: 'ألبوم قطر', navTeach: 'للمعلمين', tag: '™ × رِواق × رياضيات', h1a: 'حلّ', h1b: 'وارسم',
@@ -54,7 +55,8 @@ const T = {
       <li><b>الصف الثاني:</b> لين ١٠٠ بالعشرات، مع الحمل والاستلاف، ثلاث أعداد، ومسائل كلامية.</li>
       <li><b>الصف الثالث:</b> جدول الضرب، القسمة، العامل الناقص، ومسائل كلامية.</li></ul>
       <p>المستوى يرتفع بروحه بعد ٦ أجوبة صح ورا بعض. الأسئلة تنسوّى على الجهاز نفسه، فاللعبة تشتغل بدون نت على البروجكتر أو تابلت الصف.</p>
-      <p>مجانية • بدون تسجيل • بدون إعلانات • ولا شي عن الطالب يطلع من الجهاز.</p>`,
+      <p>مجانية • بدون تسجيل • بدون إعلانات • ولا شي عن الطالب يطلع من الجهاز.</p>
+      <p><a href="https://riwaqqatar.github.io/tools/draw/hal-warsim.html" download="حل وارسم.html" style="display:inline-block;margin-top:6px;background:var(--yellow);color:var(--ink);border:4px solid var(--ink);border-radius:999px;padding:10px 20px">⬇ حمّلوا الملف (يشتغل بدون إنترنت)</a></p>`,
   },
 };
 let lang = store.get('lang', 'en');
@@ -149,7 +151,8 @@ const PICS = window.PICS, BUILDS = ['mia', 'torch', 'dohatower', 'zubarah', 'bar
 const byId = id => PICS.find(p => p.id === id);
 let grade = store.get('grade', 1), levels = store.get('levels', { 1: 1, 2: 1, 3: 1 }), stars = store.get('stars', {}), sound = store.get('sound', true);
 let tab = store.get('tab', 'draw'), pack = 'all';
-const IMG = {}; const img = id => IMG[id] || (IMG[id] = Object.assign(new Image(), { src: `img/${id}.webp` }));
+const SRC = id => (window.IMGDATA && window.IMGDATA[id]) || `img/${id}.webp`;     // the downloadable single file carries its pictures inside
+const IMG = {}; const img = id => IMG[id] || (IMG[id] = Object.assign(new Image(), { src: SRC(id) }));
 const S = { mode: null, pic: null, fine: [], dots: [], cur: 0, prog: 0, progTo: 0, mistakes: 0, wrongRun: 0, streak: 0, phase: 'idle', t0: 0, q: null, steps: 0, shown: 0, dropFrom: 0, dropT0: 0 };
 const cv = $('#cv'), cx = cv.getContext('2d');
 let view = { s: 1, ox: 0, oy: 0, dpr: 1, w: 0, h: 0 };
@@ -348,7 +351,7 @@ function finish() {
   $('#dStars').innerHTML = [0, 1, 2].map(i => `<i>${i < st ? '★' : '☆'}</i>`).join('');
   $('#dFact').textContent = digits(lang === 'ar' ? S.pic.far : S.pic.fen);
   const pic = $('#dPic'); pic.innerHTML = '';
-  if (S.mode === 'draw') { const im = new Image(); im.src = `img/${S.pic.id}.webp`; pic.appendChild(im); }
+  if (S.mode === 'draw') { const im = new Image(); im.src = SRC(S.pic.id); pic.appendChild(im); }
   else pic.appendChild(VOX.thumb(S.pic.id, 520, .9));
   $('#dGot').textContent = t('got')(N(collected()), N(totalItems()));
   const qz = $('#dQuiz'); qz.innerHTML = '';
@@ -399,7 +402,7 @@ function applyLang() {
   $('#teachBody').innerHTML = t('teach'); renderAlbum(); updateTop();
 }
 function renderAlbum() {
-  $('#circles').innerHTML = ['falcon', 'dhow', 'dallah', 'oryx', 'mia', 'palm'].map(i => `<span><img src="img/${i}.webp" alt=""></span>`).join('');
+  $('#circles').innerHTML = ['falcon', 'dhow', 'dallah', 'oryx', 'mia', 'palm'].map(i => `<span><img src="${SRC(i)}" alt=""></span>`).join('');
   $('#grades').innerHTML = t('grades').map((g, i) => `<button class="pill${grade === i + 1 ? ' on' : ''}" data-g="${i + 1}">${g}</button>`).join('');
   $('#tabs').innerHTML = [['draw', t('tabDraw'), PICS.length], ['build', t('tabBuild'), BUILDS.length]].map(([k, l, n]) => `<button class="pill${tab === k ? ' on' : ''}" data-tab="${k}">${l} <small>${N(n)}</small></button>`).join('');
   $('#packs').innerHTML = tab === 'draw' ? window.PACKS.map(p => `<button class="pill${pack === p.id ? ' on' : ''}" data-pack="${p.id}">${lang === 'ar' ? p.ar : p.en}</button>`).join('') : '';
@@ -411,7 +414,7 @@ function renderAlbum() {
     b.innerHTML = `<div class="art c${k % 3 + 1}"><span class="n">${N(num)}</span>${st ? '' : `<span class="badge">${t('isNew')}</span>`}</div>
       <div class="row"><div><div class="nm">${nm(p)}</div><div class="meta lab">${tab === 'draw' ? t('dots')(N(STEPS[grade] + 1)) : t('steps')(N(STEPS[grade]))} · <span style="color:#e0a526">${'★'.repeat(st)}${'☆'.repeat(3 - st)}</span></div></div><span class="go">→</span></div>`;
     const art = b.querySelector('.art');
-    if (tab === 'draw') { const im = new Image(); im.src = `img/${p.id}.webp`; im.alt = ''; im.loading = 'lazy'; art.appendChild(im); }
+    if (tab === 'draw') { const im = new Image(); im.src = SRC(p.id); im.alt = ''; im.loading = 'lazy'; art.appendChild(im); }
     else { const th = VOX.thumb(p.id, 300); art.appendChild(th); }
     b.onclick = () => { initAudio(); tab === 'draw' ? startDraw(p) : startBuild(p.id); };
     box.appendChild(b);
