@@ -19,7 +19,7 @@ const T = {
     sub: 'SOLVE THE SUM · JOIN THE DOTS · WATCH QATAR APPEAR', go: 'START DRAWING →', goBuild: 'BUILD IN 3D',
     rule: 'DESIGNED BY RIWAQ © 2026  |  FREE · NO SIGN-UP · WORKS OFFLINE', rule2: 'RIWAQ × QATAR × MATHS', ghost: 'QATAR ALBUM',
     small: 'COLLECT THEM ALL', pick: 'PICK A PICTURE', collected: (a, b) => `${a} / ${b} COLLECTED`,
-    grades: ['GRADE 1', 'GRADE 2', 'GRADE 3'], gradeShort: g => `GRADE ${g}`, level: l => `LEVEL ${l}`,
+    grades: ['GRADE 1', 'GRADE 2', 'GRADE 3', 'GRADE 4', 'GRADE 5', 'GRADE 6', 'GRADE 7', 'GRADE 8', 'GRADE 9'], gradeShort: g => `GRADE ${g}`, level: l => `LEVEL ${l}`,
     tabDraw: 'SOLVE & DRAW', tabBuild: 'SOLVE & BUILD', dots: n => `${n} DOTS`, steps: n => `${n} STEPS`, isNew: 'NEW',
     qOf: (a, b) => `QUESTION ${a} OF ${b}`, hint: 'PICK THE RIGHT ANSWER · THE LINE MOVES TO THE NEXT DOT', hintB: 'EVERY RIGHT ANSWER ADDS MORE CUBES',
     good: ['Yes!', 'Brilliant!', 'Great job!', 'You got it!', 'Super!', 'Well done!'], start: ["You've got this!", 'Let’s draw!', 'Ready?'], startB: ["You've got this!", 'Let’s build!', 'Ready?'],
@@ -28,10 +28,16 @@ const T = {
     doneT: 'YOU DREW IT! 🎉', doneB: 'YOU BUILT IT! 🎉', didYou: 'DID YOU KNOW?', got: (a, b) => `ADDED TO YOUR ALBUM · ${a} / ${b}`,
     next: 'NEXT PICTURE →', again: 'PLAY AGAIN', album: 'ALBUM', right: n => `Yes! ${n} points 👏`,
     teach: `<h3>For teachers</h3>
-      <p>Solve &amp; Draw is a free maths game for grades 1–3. Each right answer joins the next dot, and the last dot shows a picture of Qatar with a short fact. In <b>Solve &amp; Build</b>, every right answer adds cubes to a 3D landmark.</p>
+      <p>Solve &amp; Draw is a free maths game for grades 1–9. Each right answer joins the next dot, and the last dot shows a picture of Qatar with a short fact. In <b>Solve &amp; Build</b>, every right answer adds cubes to a 3D landmark.</p>
       <ul><li><b>Grade 1:</b> add and subtract to 10, then to 20, missing numbers, counting pearls and word problems.</li>
       <li><b>Grade 2:</b> to 100 with tens, carrying and borrowing, three numbers and word problems.</li>
-      <li><b>Grade 3:</b> times tables, division, missing factors and word problems.</li></ul>
+      <li><b>Grade 3:</b> times tables, division, missing factors and word problems.</li>
+      <li><b>Grade 4:</b> place value, rounding, long multiplication, division, factors, equivalent fractions, perimeter and area.</li>
+      <li><b>Grade 5:</b> decimals, ×10/100/1000, fractions of amounts, adding unlike fractions, order of operations, volume, money.</li>
+      <li><b>Grade 6:</b> negative numbers, percentages, ratio, powers, one-step equations, triangle area, mean, unit rate.</li>
+      <li><b>Grade 7:</b> integer × and ÷, square roots, percentage change, two-step equations, like terms, angles, circles, proportion.</li>
+      <li><b>Grade 8:</b> laws of indices, standard form, substitution, equations on both sides, Pythagoras, gradient, y = mx + c, simultaneous equations, cylinders.</li>
+      <li><b>Grade 9:</b> expanding and factorising, quadratic equations, functions, trigonometry of special angles, probability, surds, sequences.</li></ul>
       <p>The level goes up by itself after 6 right answers in a row. Questions are made on the device, so it works offline on a projector or a class tablet.</p>
       <p>Free · no sign-up · no ads · nothing about the child leaves the device.</p>
       <p><a href="https://riwaqqatar.github.io/tools/draw/hal-warsim.html" download="Solve and Draw.html" style="display:inline-block;margin-top:6px;background:var(--yellow);color:var(--ink);border:4px solid var(--ink);border-radius:999px;padding:10px 20px">⬇ Download the file (works with no internet)</a></p>`,
@@ -41,7 +47,7 @@ const T = {
     sub: 'حل المسألة… وصّل النقاط… وشوف قطر تطلع قدّامك!', go: 'يلا نرسم ←', goBuild: 'ابنِ بالمكعبات',
     rule: 'صُمّم في رِواق © ٢٠٢٦  |  مجاني • بدون تسجيل • يشتغل بدون نت', rule2: 'رِواق × قطر × رياضيات', ghost: 'ألبوم قطر',
     small: 'اجمعها كلها', pick: 'اختار رسمتك', collected: (a, b) => `جمعت ${a} من ${b}`,
-    grades: ['الصف الأول', 'الصف الثاني', 'الصف الثالث'], gradeShort: g => `الصف ${g}`, level: l => `مستوى ${l}`,
+    grades: ['الصف الأول', 'الصف الثاني', 'الصف الثالث', 'الصف الرابع', 'الصف الخامس', 'الصف السادس', 'الصف السابع', 'الصف الثامن', 'الصف التاسع'], gradeShort: g => `الصف ${g}`, level: l => `مستوى ${l}`,
     tabDraw: 'حلّ وارسم', tabBuild: 'حلّ وابنِ', dots: n => `${n} نقطة`, steps: n => `${n} خطوة`, isNew: 'جديد',
     qOf: (a, b) => `سؤال ${a} من ${b}`, hint: 'اختار الجواب الصح… والخط يكمل للنقطة الجاية', hintB: 'كل جواب صح يزيد مكعبات',
     good: ['صح!', 'كفو!', 'يا سلام!', 'ممتاز!', 'برافو!', 'عاش!'], start: ['تقدر عليها!', 'يلا نرسم!', 'جاهز؟'], startB: ['تقدر عليها!', 'يلا نبني!', 'جاهز؟'],
@@ -50,10 +56,16 @@ const T = {
     doneT: 'رسمتها! 🎉', doneB: 'بنيتها! 🎉', didYou: 'تدري؟', got: (a, b) => `انضافت لألبومك • ${a} من ${b}`,
     next: 'الرسمة الجاية ←', again: 'مرة ثانية', album: 'الألبوم', right: n => `صح! ${n} رؤوس 👏`,
     teach: `<h3>للمعلمين</h3>
-      <p>«حلّ وارسم» لعبة رياضيات مجانية للصفوف ١–٣. كل جواب صح يوصّل النقطة اللي بعدها، وآخر نقطة تطلّع رسمة من قطر مع معلومة قصيرة. وفي «حلّ وابنِ»، كل جواب صح يزيد مكعبات لين يكتمل معلم من قطر.</p>
+      <p>«حلّ وارسم» لعبة رياضيات مجانية للصفوف ١–٩. كل جواب صح يوصّل النقطة اللي بعدها، وآخر نقطة تطلّع رسمة من قطر مع معلومة قصيرة. وفي «حلّ وابنِ»، كل جواب صح يزيد مكعبات لين يكتمل معلم من قطر.</p>
       <ul><li><b>الصف الأول:</b> جمع وطرح لين ١٠ ثم ٢٠، العدد الناقص، عدّ اللولو، ومسائل كلامية.</li>
       <li><b>الصف الثاني:</b> لين ١٠٠ بالعشرات، مع الحمل والاستلاف، ثلاث أعداد، ومسائل كلامية.</li>
-      <li><b>الصف الثالث:</b> جدول الضرب، القسمة، العامل الناقص، ومسائل كلامية.</li></ul>
+      <li><b>الصف الثالث:</b> جدول الضرب، القسمة، العامل الناقص، ومسائل كلامية.</li>
+      <li><b>الصف الرابع:</b> القيمة المنزلية، التقريب، ضرب عددين من منزلتين، القسمة، العوامل، الكسور المتكافئة، المحيط والمساحة.</li>
+      <li><b>الصف الخامس:</b> الكسور العشرية، الضرب في ١٠ و١٠٠ و١٠٠٠، كسر من عدد، جمع كسور مختلفة المقامات، ترتيب العمليات، الحجم، والفلوس.</li>
+      <li><b>الصف السادس:</b> الأعداد السالبة، النسبة المئوية، النسبة، القوى، معادلات بخطوة وحدة، مساحة المثلث، المتوسط، وسعر الوحدة.</li>
+      <li><b>الصف السابع:</b> ضرب وقسمة الأعداد الصحيحة، الجذور التربيعية، التغيّر المئوي، معادلات بخطوتين، الحدود المتشابهة، الزوايا، الدائرة، والتناسب.</li>
+      <li><b>الصف الثامن:</b> قوانين الأسس، الصيغة العلمية، التعويض، معادلات في الطرفين، فيثاغورس، الميل، y = mx + c، المعادلات الآنية، والأسطوانة.</li>
+      <li><b>الصف التاسع:</b> فك الأقواس والتحليل، المعادلات التربيعية، الدوال، النسب المثلثية للزوايا الخاصة، الاحتمال، الجذور، والمتتابعات.</li></ul>
       <p>المستوى يرتفع بروحه بعد ٦ أجوبة صح ورا بعض. الأسئلة تنسوّى على الجهاز نفسه، فاللعبة تشتغل بدون نت على البروجكتر أو تابلت الصف.</p>
       <p>مجانية • بدون تسجيل • بدون إعلانات • ولا شي عن الطالب يطلع من الجهاز.</p>
       <p><a href="https://riwaqqatar.github.io/tools/draw/hal-warsim.html" download="حل وارسم.html" style="display:inline-block;margin-top:6px;background:var(--yellow);color:var(--ink);border:4px solid var(--ink);border-radius:999px;padding:10px 20px">⬇ حمّلوا الملف (يشتغل بدون إنترنت)</a></p>`,
@@ -97,6 +109,7 @@ const W = {
     return word(`${p.n} shares ${CE(tot, o)} equally with ${k} friends.`, 'How many does each get?'); },
 };
 function gen(g, L) {
+  if (g >= 4) return genHigh(g, L);
   const r = Math.random();
   if (g === 1) {
     if (L === 1) {
@@ -137,8 +150,195 @@ function gen(g, L) {
   if (r < .75) { const a = ri(2, 6), b = ri(3, 9); return { ans: a * b, html: W.mul(a, b), f: b }; }
   const k = ri(3, 5), q = ri(3, 9); return { ans: q, html: W.div(k * q, k) };
 }
+/* ============================================================ grades 4–9 (28 Nov 2026)
+   Every question returns { ans: <key>, html, opts: [{k, h}] }: four ready-made choices, one right, three that look right
+   (sign slips, wrong operation, off-by-one place). Expressions are written left-to-right in both languages, as in Qatari maths books. */
+const DEC = () => (lang === 'ar' && digitsAr) ? '٫' : '.';
+const fmt = v => {                                          // number -> text: −, decimal comma in Arabic, no float noise
+  const r = Math.round(v * 1000) / 1000, s = String(Math.abs(r)).replace('.', DEC());
+  return (r < 0 ? '−' : '') + N(s.replace(/\d/g, d => d)).replace(/\./g, DEC());
+};
+const nf = v => (lang === 'ar' && digitsAr) ? fmt(v) : fmt(v);
+const ar = s => (lang === 'ar' && digitsAr) ? String(s).replace(/\d/g, d => AR[d]) : String(s);  // digits only, inside a string
+const fr = (a, b) => `<span class="fr"><i>${ar(a)}</i><i>${ar(b)}</i></span>`;
+const frs = (a, b) => (b === 1 ? nf(a) : (a < 0 ? '−' : '') + fr(Math.abs(a), b));
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) [a, b] = [b, a % b]; return a || 1; };
+const red = (a, b) => { const g = gcd(a, b); return [a / g, b / g]; };
+const pw = (b, e) => `${ar(b)}<sup>${ar(e)}</sup>`;
+const rt = v => `<span class="rt">√<span>${ar(v)}</span></span>`;
+// algebra (has letters: x, y, f, sin…) is always LTR, as in the books; plain arithmetic follows grades 1–3 (RTL with Arabic digits)
+const AL = html => /[a-z]/i.test(html.replace(/<[^>]+>/g, '')) ? `<div class="eq alg">${html}</div>` : `<div class="eq${lang === 'ar' && digitsAr ? ' arabic' : ''}">${html}</div>`;
+const Q = () => `<span class="qm">${QM()}</span>`;
+const opp = s => s.replace(/-/g, '−');
+const co = m => m === 1 ? '' : m === -1 ? '−' : nf(m);       // coefficient: 1x -> x, −1x -> −x
+// build 4 choices from the right value + candidates; v = numeric value, h = html label
+function pick4(right, cands, label = nf) {
+  const seen = new Set([label(right)]), out = [{ k: 'r', h: label(right) }];
+  const whole = typeof right === 'number' && Number.isInteger(Math.round(right * 1000) / 1000);
+  for (const c of shuffle(cands.slice())) { if (out.length >= 4) break; if (c === undefined || c === null || Number.isNaN(c) || !Number.isFinite(c)) continue;
+    if (whole && !Number.isInteger(Math.round(c * 1000) / 1000)) continue;           // whole-number answer -> whole-number distractors only
+    const h = label(c); if (seen.has(h)) continue; seen.add(h); out.push({ k: 'w' + out.length, h }); }
+  let k = 1; while (out.length < 4) { const h = label(typeof right === 'number' ? right + k * (k % 2 ? 1 : -1) * Math.max(1, Math.round(Math.abs(right) / 10)) : right + k); if (!seen.has(h)) { seen.add(h); out.push({ k: 'w' + out.length, h }); } k++; }
+  return shuffle(out);
+}
+const hq = (html, right, cands, label) => ({ ans: 'r', html, opts: pick4(right, cands, label) });
+// text choices: pass MORE than 3 wrongs; duplicates of the right answer (or of each other) are dropped by what they look like
+const hqT = (html, right, wrongs) => {
+  const vis = h => String(h).replace(/<[^>]+>/g, '').replace(/\s+/g, ''), seen = new Set([vis(right)]), w = [];
+  for (const h of wrongs) { const v = vis(h); if (!v || seen.has(v) || /NaN|undefined|Infinity/.test(v)) continue; seen.add(v); w.push(h); if (w.length === 3) break; }
+  return { ans: 'r', html, opts: shuffle([{ k: 'r', h: right }, ...w.map((h, i) => ({ k: 'w' + i, h }))]) };
+};
+const wq = (en, ar_, qEn, qAr) => lang === 'ar' ? word(ar_, qAr) : word(en, qEn);
+const P = () => person();
+const he = p => p.f ? 'she' : 'he';
+
+const G = {
+  4: [
+    () => { const r = Math.random();
+      if (r < .34) { const n = ri(1000, 9999), s = String(n), i = ri(0, 3), d = +s[i], place = 10 ** (3 - i);
+        if (!d) return G[4][0]();
+        return hq(wq(`What is the value of the digit ${d} in ${n.toLocaleString('en')}?`, `كم قيمة الرقم ${ar(d)} في العدد ${ar(n)}؟`, '', ''), d * place, [d, d * place * 10, d * place / 10, d * 10 ** (3 - ((i + 1) % 4))].filter(v => v >= 1)); }
+      if (r < .67) { const n = ri(1200, 9800), to = pick([10, 100]), ans = Math.round(n / to) * to;
+        return hq(wq(`Round ${n} to the nearest ${to}.`, `قرّب العدد ${ar(n)} لأقرب ${ar(to)}.`, '', ''), ans, [ans - to, ans + to, Math.floor(n / to) * to === ans ? Math.ceil(n / to) * to : Math.floor(n / to) * to, Math.round(n / (to * 10)) * to * 10]); }
+      const a = ri(12, 98), b = ri(3, 9); return hq(ex(a, '×', b), a * b, [a * b + b, a * b - b, a * b + 10, a * b - 10]); },
+    () => { const r = Math.random();
+      if (r < .35) { const a = ri(12, 39), b = ri(11, 29); return hq(ex(a, '×', b), a * b, [a * b + a, a * b - b, a * b + 10, (a % 10) * (b % 10) + Math.floor(a / 10) * Math.floor(b / 10) * 100]); }
+      if (r < .65) { const b = ri(3, 9), q = ri(12, 30); return hq(ex(b * q, '÷', b), q, [q + 1, q - 1, q + 10, q * 2]); }
+      if (r < .85) { const n = pick([24, 36, 48, 60, 72, 84, 90]), fs = []; for (let i = 2; i < n; i++) if (n % i === 0) fs.push(i);
+        const right = pick(fs), wrong = []; for (let i = 5; i < n; i++) if (n % i && !wrong.includes(i)) wrong.push(i);
+        return hq(wq(`Which number is a factor of ${n}?`, `أي عدد من هذي عامل من عوامل ${ar(n)}؟`, '', ''), right, shuffle(wrong).slice(0, 6)); }
+      const b = pick([2, 3, 4, 5]), k = ri(2, 4), a = ri(1, b - 1); return hq(AL(`${fr(a, b)} = ${fr(Q(), b * k)}`), a * k, [a + k, a * k + 1, b * k - a, a * (k + 1)]); },
+    () => { const r = Math.random();
+      if (r < .3) { const d = pick([5, 7, 8, 9, 11]), a = ri(1, d - 3), b = ri(1, d - 1 - a);
+        return hqT(AL(`${fr(a, d)} + ${fr(b, d)} = ${Q()}`), fr(a + b, d), [fr(a + b, d + d), fr(a + b + 1, d), fr(a * b, d), fr(Math.max(1, a + b - 1), d), fr(a + b, d - 1), fr(a + b + 2, d + 1)]); }
+      if (r < .55) { const l = ri(8, 25), w = ri(4, 15), p = P();
+        return hq(wq(`A garden in Al Wakrah is ${l} m long and ${w} m wide. How long is the fence around it?`, `حديقة في الوكرة طولها ${ar(l)} م وعرضها ${ar(w)} م. كم طول السور اللي حولها؟`, '', ''), 2 * (l + w), [l + w, l * w, 2 * l + w, 2 * (l + w) + 2]); }
+      if (r < .8) { const l = ri(6, 15), w = ri(3, 9);
+        return hq(wq(`A classroom floor is ${l} m by ${w} m. What is its area in m²?`, `أرضية فصل طولها ${ar(l)} م وعرضها ${ar(w)} م. كم مساحتها بالمتر المربع؟`, '', ''), l * w, [2 * (l + w), l * w + l, l + w, l * w - w]); }
+      const seats = pick([32, 45, 48]), buses = ri(3, 8), left = ri(5, seats - 5);
+      return hq(wq(`A school trip to Katara takes ${buses} buses with ${seats} seats each. ${left} seats stay empty. How many students went?`, `رحلة مدرسية لكتارا فيها ${ar(buses)} باصات، في كل باص ${ar(seats)} كرسي. ظل ${ar(left)} ${left <= 10 ? 'كراسي فاضية' : 'كرسي فاضي'}. كم طالب راح؟`, '', ''), buses * seats - left, [buses * seats, buses * seats + left, buses * seats - left - 10, (buses - 1) * seats]); },
+  ],
+  5: [
+    () => { const r = Math.random();
+      if (r < .4) { const a = ri(11, 89) / 10, b = ri(101, 499) / 100, plus = Math.random() < .6, ans = plus ? a + b : Math.max(a, b) - Math.min(a, b);
+        const A = plus ? a : Math.max(a, b), B = plus ? b : Math.min(a, b);
+        return hq(AL(`${nf(A)} ${plus ? '+' : '−'} ${nf(B)} = ${Q()}`), ans, [ans + .1, ans - .01, ans + 1, plus ? A * 10 / 10 + B * 10 : ans + .09]); }
+      if (r < .7) { const a = ri(101, 999) / 100, m = pick([10, 100, 1000]); return hq(AL(`${nf(a)} × ${nf(m)} = ${Q()}`), a * m, [a * m / 10, a * m * 10, a + m, a * m / 100]); }
+      const d = pick([2, 3, 4, 5, 6, 8]), n = d * ri(3, 12); return hq(AL(`${fr(1, d)} × ${nf(n)} = ${Q()}`), n / d, [n * d, n / d + 1, n - d, n / d * 2]); },
+    () => { const r = Math.random();
+      if (r < .35) { const [b1, b2] = pick([[2, 3], [2, 5], [3, 4], [2, 7], [3, 5], [4, 5]]), a1 = 1, a2 = ri(1, b2 - 1), [n, d] = red(a1 * b2 + a2 * b1, b1 * b2);
+        return hqT(AL(`${fr(a1, b1)} + ${fr(a2, b2)} = ${Q()}`), frs(n, d), [fr(a1 + a2, b1 + b2), fr(a1 + a2, b1 * b2), frs(...red(a1 * b2 + a2 * b1 + 1, b1 * b2))]); }
+      if (r < .65) { const a = ri(2, 9) / 10, n = ri(3, 9); return hq(AL(`${nf(a)} × ${nf(n)} = ${Q()}`), a * n, [a * n * 10, a * n / 10, a + n, a * n + .1]); }
+      const a = ri(2, 9), b = ri(2, 9), c = ri(2, 9); return hq(AL(`${nf(a)} + ${nf(b)} × ${nf(c)} = ${Q()}`), a + b * c, [(a + b) * c, a + b + c, a * b + c, a + b * c + 1]); },
+    () => { const r = Math.random();
+      if (r < .3) { const l = ri(3, 12), w = ri(2, 8), h = ri(2, 6);
+        return hq(wq(`A box of dates is ${l} cm long, ${w} cm wide and ${h} cm high. What is its volume in cm³?`, `علبة تمر طولها ${ar(l)} سم وعرضها ${ar(w)} سم وارتفاعها ${ar(h)} سم. كم حجمها بالسنتيمتر المكعب؟`, '', ''), l * w * h, [l * w + h, 2 * (l * w + w * h + l * h), l + w + h, l * w * h + l * w]); }
+      if (r < .6) { const w = ri(1, 4), d = pick([3, 4, 5, 6, 8]), n = ri(1, d - 1);
+        return hq(AL(`${nf(w)}${fr(n, d)} = ${fr(Q(), d)}`), w * d + n, [w + n, w * n + d, w * d, w * d + n + 1]); }
+      const price = pick([2.75, 3.5, 4.25, 1.5, 6.5]), k = ri(3, 8), p = P();
+      return hq(wq(`One karak costs QR ${price}. ${p.n} buys ${k} cups. How much does ${he(p)} pay (QR)?`, `كوب الكرك بـ ${nf(price)} ريال. ${p.n} ${p.f ? 'اشترت' : 'اشترى'} ${ar(k)} أكواب. كم ${p.f ? 'دفعت' : 'دفع'} بالريال؟`, '', ''), price * k, [price * k + price, price + k, price * k - 1, price * (k - 1)]); },
+  ],
+  6: [
+    () => { const r = Math.random();
+      if (r < .4) { let a = ri(-15, 15) || 4, b = ri(-12, 12) || -3; if (a > 0 && b > 0) a = -a;      // always at least one negative number
+        const plus = Math.random() < .5, ans = plus ? a + b : a - b;
+        const B = b < 0 ? `(${nf(b)})` : nf(b); return hq(AL(`${nf(a)} ${plus ? '+' : '−'} ${B} = ${Q()}`), ans, [-ans, plus ? a - b : a + b, ans + 1, ans - 1]); }
+      if (r < .7) { const pc = pick([10, 20, 25, 50, 75, 5, 30]), base = pick([40, 60, 80, 120, 200, 360]), ans = pc * base / 100;
+        return hq(lang === 'ar' ? word('', `كم ${ar(pc)}٪ من ${ar(base)}؟`) : AL(`${pc}% of ${base} = ${Q()}`), ans, [ans * 10, base - ans, pc + base / 10, ans / 2]); }
+      const k = ri(2, 6), a = ri(1, 5), b = ri(a + 1, 9), g = gcd(a, b), A = a / g * k, B = b / g * k;
+      const ra = (x, y) => lang === 'ar' ? `<span dir="rtl">${ar(x)} : ${ar(y)}</span>` : `${x} : ${y}`;     // Arabic ratios read right-to-left
+      return hqT(lang === 'ar' ? word(`بسّط النسبة`, `${ar(A)} : ${ar(B)}`) : AL(`${A} : ${B} = ${Q()}`), ra(a / g, b / g), [ra(b / g, a / g), ra(Math.max(1, A / 2 | 0), B - 1), ra(a / g + 1, b / g + 1)]); },
+    () => { const r = Math.random();
+      if (r < .3) { const b = ri(2, 5), e = ri(2, b <= 3 ? 5 : 3); return hq(AL(`${pw(b, e)} = ${Q()}`), b ** e, [b * e, b ** (e - 1), b ** e + b, e ** b]); }
+      if (r < .6) { const a = ri(2, 9), b = ri(2, 9), c = ri(2, 6); return hq(AL(`(${nf(a)} + ${nf(b)}) × ${nf(c)} = ${Q()}`), (a + b) * c, [a + b * c, a * c + b, (a + b) * c + c, a + b + c]); }
+      if (Math.random() < .5) { const x = ri(3, 20), a = ri(2, 15); return hq(AL(`x + ${nf(a)} = ${nf(x + a)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, x, [x + 2 * a, x + a, a - x, x - 1]); }
+      const x = ri(2, 12), a = ri(2, 9); return hq(AL(`${ar(a)}x = ${nf(a * x)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, x, [a * x - a, a * x * a, x + a, x + 1]); },
+    () => { const r = Math.random();
+      if (r < .35) { const b = ri(4, 16) * 2, h = ri(3, 12);
+        return hq(wq(`A triangle has a base of ${b} cm and a height of ${h} cm. What is its area in cm²?`, `مثلث قاعدته ${ar(b)} سم وارتفاعه ${ar(h)} سم. كم مساحته بالسنتيمتر المربع؟`, '', ''), b * h / 2, [b * h, b + h, b * h / 2 + h, (b + h) / 2]); }
+      if (r < .7) { const n = 5, base = ri(4, 12), xs = Array.from({ length: n }, () => ri(-3, 3)); const tot = xs.reduce((a, b) => a + b, 0); xs[0] -= tot; const vals = xs.map(v => base + v);
+        if (vals.some(v => v <= 0)) return G[6][2]();
+        return hq(wq(`Goals scored by a team in 5 matches: ${vals.join(', ')}. What is the mean?`, `أهداف فريق في ٥ مباريات: ${vals.map(ar).join('، ')}. كم المتوسط؟`, '', ''), base, [base + 1, base - 1, Math.max(...vals), vals.reduce((a, b) => a + b, 0)]); }
+      const k = ri(3, 8), unit = pick([2, 3, 4, 5, 6]);
+      return hq(wq(`${k} metro tickets cost QR ${k * unit}. How much is one ticket (QR)?`, `${ar(k)} تذاكر مترو بـ ${ar(k * unit)} ريال. كم سعر التذكرة الوحدة بالريال؟`, '', ''), unit, [unit * k, unit + 1, k * unit - k, unit + k]); },
+  ],
+  7: [
+    () => { const r = Math.random();
+      if (r < .4) { const a = ri(2, 12) * pick([-1, 1]), b = ri(2, 9) * pick([-1, 1]), mul = Math.random() < .5;
+        if (mul) return hq(AL(`${nf(a)} × ${b < 0 ? `(${nf(b)})` : nf(b)} = ${Q()}`), a * b, [-a * b, a + b, a * b + b, -(a + b)]);
+        return hq(AL(`${nf(a * b)} ÷ ${b < 0 ? `(${nf(b)})` : nf(b)} = ${Q()}`), a, [-a, a * b - b, a + 1, -a - 1]); }
+      if (r < .7) { const s = ri(4, 20); return hq(AL(`${rt(s * s)} = ${Q()}`), s, [s * s / 2, s + 2, s - 1, s * 2]); }
+      const p0 = pick([80, 120, 200, 250, 400]), pc = pick([10, 15, 20, 25]), up = Math.random() < .5, ans = p0 * (1 + (up ? pc : -pc) / 100);
+      return hq(wq(`An abaya costs QR ${p0}. The price goes ${up ? 'up' : 'down'} by ${pc}%. What is the new price (QR)?`, `عباية سعرها ${ar(p0)} ريال. السعر ${up ? 'زاد' : 'نزل'} ${ar(pc)}٪. كم السعر الجديد بالريال؟`, '', ''), ans, [p0 * pc / 100, up ? p0 - p0 * pc / 100 : p0 + p0 * pc / 100, p0 + (up ? pc : -pc), ans + 10]); },
+    () => { const r = Math.random();
+      if (r < .4) { const x = ri(2, 12) * pick([1, 1, -1]), a = ri(2, 9), b = ri(1, 20) * pick([1, -1]), c = a * x + b;
+        return hq(AL(`${ar(a)}x ${b < 0 ? '−' : '+'} ${nf(Math.abs(b))} = ${nf(c)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, x, [(c + b) / a, c / a - b, x + 1, -x]); }
+      if (r < .7) { const a = ri(2, 9), b = ri(2, 9), c = ri(1, a + b - 1), ans = a + b - c;
+        return hqT(AL(`${ar(a)}y + ${ar(b)}y − ${ar(c)}y = ${Q()}`), `${ar(ans)}y`, [`${ar(a + b + c)}y`, `${ar(ans)}y<sup>${ar(3)}</sup>`, `${ar(ans + 1)}y`]); }
+      const A = ri(35, 80), B = ri(30, 175 - A - 10);
+      if (Math.random() < .5) return hq(wq(`Two angles of a triangle are ${A}° and ${B}°. What is the third angle?`, `زاويتين في مثلث ${ar(A)}° و${ar(B)}°. كم الزاوية الثالثة؟`, '', ''), 180 - A - B, [360 - A - B, 90 - A + B > 0 ? 90 - A + B : 180 - A, 180 - A - B + 10, A + B]);
+      return hq(wq(`Two angles on a straight line: one is ${A + 40}°. What is the other?`, `زاويتين على خط مستقيم، وحدة منهم ${ar(A + 40)}°. كم الثانية؟`, '', ''), 180 - A - 40, [360 - A - 40, 90 - (A + 40) % 90, 180 - A - 30, A + 40]); },
+    () => { const r = Math.random();
+      if (r < .35) { const rr = pick([7, 14, 21, 35]), area = Math.random() < .5;
+        const ans = area ? 22 / 7 * rr * rr : 2 * 22 / 7 * rr;
+        return hq(wq(`A round fountain has a radius of ${rr} m. Using π = 22/7, what is its ${area ? 'area (m²)' : 'circumference (m)'}?`, `نافورة دائرية نصف قطرها ${ar(rr)} م. باستخدام π = ٢٢ ÷ ٧، كم ${area ? 'مساحتها بالمتر المربع' : 'محيطها بالمتر'}؟`, '', ''), ans,
+          area ? [2 * 22 / 7 * rr, 22 / 7 * rr * 2 * rr, ans + 22, 22 / 7 * rr] : [22 / 7 * rr * rr, 22 / 7 * rr, ans + 22, 2 * rr * 3]); }
+      if (r < .65) { const a = ri(1, 5), b = pick([4, 5, 6, 8]), k = ri(2, 6); return hq(AL(`${fr(a, b)} = ${fr('x', b * k)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, a * k, [a + k, b * k - a, a * k + 1, b + k]); }
+      const p0 = pick([150, 240, 300, 360, 500]), pc = pick([20, 25, 30, 40]);
+      return hq(wq(`During the Doha shopping festival, a QR ${p0} item has ${pc}% off. How much do you save (QR)?`, `في مهرجان الدوحة للتسوّق، غرض سعره ${ar(p0)} ريال عليه خصم ${ar(pc)}٪. كم توفّر بالريال؟`, '', ''), p0 * pc / 100, [p0 - p0 * pc / 100, pc, p0 * pc / 10, p0 * pc / 100 + 10]); },
+  ],
+  8: [
+    () => { const r = Math.random();
+      if (r < .35) { const b = pick([2, 3, 5, 10]), m = ri(2, 6), n = ri(2, 6), mul = Math.random() < .6;
+        return mul ? hq(AL(`${pw(b, m)} × ${pw(b, n)} = ${pw(b, Q())}`), m + n, [m * n, m + n + 1, Math.abs(m - n), m + n - 1])
+                   : hq(AL(`(${pw(b, m)})<sup>${ar(n)}</sup> = ${pw(b, Q())}`), m * n, [m + n, m * n + 1, m ** n, m * n - 1]); }
+      if (r < .65) { const m = ri(11, 99) / 10, e = ri(3, 6), big = Math.round(m * 10 ** e);
+        return hq(AL(`${ar(big.toLocaleString('en'))} = ${nf(m)} × ${pw(10, Q())}`), e, [e + 1, e - 1, String(big).length, e + 2]); }
+      const a = ri(-4, 6) || 2, b = ri(-5, 5) || -2, c = ri(2, 5);
+      return hq(AL(`a = ${nf(a)},  b = ${nf(b)}`) + AL(`${ar(c)}a − b = ${Q()}`), c * a - b, [c * a + b, c * (a - b), c + a - b, -(c * a - b)]); },
+    () => { const r = Math.random();
+      if (r < .4) { const x = ri(1, 12), a = ri(3, 9), c = ri(1, a - 1), b = ri(1, 15), d = (a - c) * x + b;
+        return hq(AL(`${ar(a)}x + ${nf(b)} = ${ar(c)}x + ${nf(d)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, x, [(d + b) / (a - c), (d - b) / (a + c), x + 1, d - b]); }
+      if (r < .7) { const [p, q, h] = pick([[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [7, 24, 25]]);
+        return hq(wq(`A ladder reaches a wall: the foot is ${p} m from the wall and the top is ${q} m up. How long is the ladder (m)?`, `سلّم مسنود على جدار: قاعدته تبعد ${ar(p)} م عن الجدار، وراسه على ارتفاع ${ar(q)} م. كم طول السلّم بالمتر؟`, '', ''), h, [p + q, h + 1, q * q - p * p > 0 ? Math.round(Math.sqrt(q * q - p * p)) : h - 2, (p * q) / 2]); }
+      const x1 = ri(-3, 3), y1 = ri(-3, 3), m = ri(-3, 4) || 2, dx = ri(1, 4), x2 = x1 + dx, y2 = y1 + m * dx;
+      return hq(AL(`(${nf(x1)}, ${nf(y1)})  →  (${nf(x2)}, ${nf(y2)})`) + `<div class="word"><b>${lang === 'ar' ? 'كم الميل؟' : 'What is the slope?'}</b></div>`, m, [-m, dx / (m * dx || 1), m + 1, (y2 - y1) + (x2 - x1)]); },
+    () => { const r = Math.random();
+      if (r < .35) { const m = ri(-4, 5) || 3, c = ri(-8, 9), x = ri(-4, 6); return hq(AL(`y = ${co(m)}x ${c < 0 ? '−' : '+'} ${nf(Math.abs(c))}`) + `<div class="word"><b>x = ${nf(x)} → y = ${QM()}</b></div>`, m * x + c, [m * x - c, m + x + c, m * (x + c), m * x + c + m]); }
+      if (r < .7) { const x = ri(2, 12), y = ri(1, x - 1); return hq(AL(`x + y = ${nf(x + y)}`) + AL(`x − y = ${nf(x - y)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, x, [y, x + y, x - y, x + 1]); }
+      const rr = pick([7, 14]), h = ri(2, 10); return hq(wq(`A water tank is a cylinder with radius ${rr} m and height ${h} m. Using π = 22/7, what is its volume (m³)?`, `خزان ماي أسطواني نصف قطره ${ar(rr)} م وارتفاعه ${ar(h)} م. باستخدام π = ٢٢ ÷ ٧، كم حجمه بالمتر المكعب؟`, '', ''), 22 / 7 * rr * rr * h, [2 * 22 / 7 * rr * h, 22 / 7 * rr * h, 22 / 7 * rr * rr, 22 / 7 * rr * rr * h + 22]); },
+  ],
+  9: [
+    () => { const r = Math.random();
+      const a = ri(1, 7) * pick([1, -1]), b = ri(1, 7) * pick([1, 1, -1]);
+      const sg = v => v < 0 ? `− ${ar(-v)}` : `+ ${ar(v)}`;
+      if (r < .4) return hq(AL(`(x ${sg(a)})(x ${sg(b)}) = x<sup>${ar(2)}</sup> ${Q()}x ${sg(a * b)}`).replace(` ${Q()}x`, ` + ${Q()}x`), a + b, [a * b, a - b, -(a + b), a + b + 1]);
+      const R = (p, q) => `(x ${sg(p)})(x ${sg(q)})`;
+      if (r < .7) return hqT(AL(`x<sup>${ar(2)}</sup> ${sg(a + b).replace('+ 0', '')}x ${sg(a * b)}`) + `<div class="word"><b>${lang === 'ar' ? 'حلّلها' : 'Factorise'}</b></div>`, R(a, b), [R(-a, -b), R(a * b === 0 ? 1 : a + b, 1), R(a, -b)]);
+      const p = ri(1, 8), q = ri(1, 8) * pick([1, -1]); const sum = p + q, prod = p * q;
+      return hqT(AL(`x<sup>${ar(2)}</sup> ${sg(-sum)}x ${sg(prod)} = ${ar(0)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, `${nf(Math.min(p, q))} , ${nf(Math.max(p, q))}`,
+        [`${nf(-Math.max(p, q))} , ${nf(-Math.min(p, q))}`, `${nf(Math.min(p, q) + 1)} , ${nf(Math.max(p, q) - 1)}`, `${nf(sum)} , ${nf(prod)}`,
+         `${nf(Math.min(p, q) - 1)} , ${nf(Math.max(p, q) + 1)}`, `${nf(-p)} , ${nf(q)}`, `${nf(p)} , ${nf(-q)}`, `${nf(Math.min(p, q))} , ${nf(Math.max(p, q) + 2)}`]); },
+    () => { const r = Math.random();
+      if (r < .35) { const a = ri(1, 4), b = ri(-6, 6), x = ri(-4, 4); return hq(AL(`f(x) = ${co(a)}x<sup>${ar(2)}</sup> ${b < 0 ? '−' : '+'} ${ar(Math.abs(b))}`) + `<div class="word"><b>f(${nf(x)}) = ${QM()}</b></div>`, a * x * x + b, [-a * x * x + b, a * 2 * x + b, a * x * x - b, (a * x) ** 2 + b]); }
+      if (r < .7) { const [fnc, deg, val] = pick([['sin', 30, '½'], ['cos', 60, '½'], ['tan', 45, '1'], ['sin', 90, '1'], ['cos', 0, '1'], ['sin', 0, '0'], ['cos', 90, '0']]);
+        const half = `<span class="fr"><i>${ar(1)}</i><i>${ar(2)}</i></span>`, show = v => v === '½' ? half : ar(v);
+        const pool = ['½', '1', '0', '√3'].filter(v => v !== val);
+        return hqT(AL(`${fnc} ${ar(deg)}° = ${Q()}`), show(val), pool.map(v => v === '√3' ? rt(3) : show(v))); }
+      const red_ = ri(2, 6), blue = ri(2, 7), green = ri(1, 5), tot = red_ + blue + green, [n, d] = red(red_, tot);
+      return hqT(wq(`A bag has ${red_} red, ${blue} blue and ${green} green marbles. What is the probability of picking red?`, `في كيس ${ar(red_)} كرات حمر و${ar(blue)} زرق و${ar(green)} خضر. كم احتمال تطلع كرة حمرا؟`, '', ''), fr(n, d), [fr(red_, blue + green), fr(blue, tot), fr(green, tot), fr(red_ + 1, tot), fr(1, 3), fr(red_, tot + 1)]); },
+    () => { const r = Math.random();
+      if (r < .35) { const y = ri(1, 9), x = ri(y + 1, 12), a = ri(2, 3); return hq(AL(`${ar(a)}x + y = ${nf(a * x + y)}`) + AL(`x − y = ${nf(x - y)}`) + `<div class="word"><b>x = ${QM()}</b></div>`, x, [y, x + 1, (a * x + y + x - y) / a, x - y]); }
+      if (r < .65) { const k = pick([2, 3, 5, 6, 7]), s = ri(2, 6), n = s * s * k; return hqT(AL(`${rt(n)} = ${Q()}${rt(k)}`), ar(s), [ar(s * s), ar(s + 1), ar(s - 1), ar(k), ar(s * k), ar(n / k / 2 | 0), ar(s + 2)]); }
+      if (Math.random() < .5) { const a = ri(2, 9), d = ri(2, 7), n = ri(8, 20); return hq(AL(`${ar(a)}, ${ar(a + d)}, ${ar(a + 2 * d)}, ${ar(a + 3 * d)}, …`) + `<div class="word"><b>${lang === 'ar' ? `الحد رقم ${ar(n)} = ${QM()}` : `Term ${n} = ?`}</b></div>`, a + (n - 1) * d, [a + n * d, n * d, a + (n - 2) * d, a * n]); }
+      const a = ri(1, 5), k = pick([2, 3]); return hq(AL(`${ar(a)}, ${ar(a * k)}, ${ar(a * k * k)}, ${Q()}`), a * k ** 3, [a * k * k + a * k, a * k * k * 2, a * k ** 3 + k, a * k ** 4]); },
+  ],
+};
+function genHigh(g, L) { return G[g][clamp(L, 1, 3) - 1](); }
+
 // wrong answers that look right: neighbours, ±10, the next table step
 function options(q, g) {
+  if (q.opts) return q.opts;
   const n = g === 1 ? 3 : 4, a = q.ans, set = new Set([a]);
   const d = g === 1 ? [1, -1, 2, -2, 3] : g === 2 ? [1, -1, 10, -10, 2, -2, 9, 11] : [1, -1, q.f || 2, -(q.f || 2), 10, 2, -2];
   for (const k of shuffle(d.slice())) { if (set.size >= n) break; const v = a + k; if (v >= 0) set.add(v); }
@@ -205,7 +405,7 @@ function layout() {
 const P2S = (x, y) => [view.ox + x * view.s, view.oy + y * view.s];
 
 /* ============================================================ a round */
-const STEPS = { 1: 12, 2: 18, 3: 24 };
+const STEPS = { 1: 12, 2: 18, 3: 24, 4: 20, 5: 20, 6: 18, 7: 16, 8: 16, 9: 14 };   // older grades: harder questions, fewer of them
 function openPlay() { $('#play').classList.remove('hide'); document.body.style.overflow = 'hidden'; }
 function startDraw(p) {
   S.mode = 'draw'; S.pic = p; openPlay(); $('#board').classList.remove('vox');
@@ -228,20 +428,30 @@ function common() {
   say(pick(t(S.mode === 'draw' ? 'start' : 'startB'))); updateTop(); nextQ();
 }
 function nextQ() {
-  S.q = gen(grade, levels[grade]);
+  S.q = gen(grade, levels[grade] || 1);
   $('#qn').textContent = t('qOf')(N(S.cur + 1), N(S.steps));
   $('#qbar').style.width = (S.cur / S.steps * 100) + '%';
   $('#qbody').innerHTML = S.q.html;
-  const o = options(S.q, grade), box = $('#ans'); box.className = 'ans' + (o.length === 3 ? ' n3' : ''); box.innerHTML = '';
-  for (const v of o) { const b = document.createElement('button'); b.textContent = N(v); b.dataset.v = v; b.onclick = () => answer(b, v); box.appendChild(b); }
+  const o = options(S.q, grade), box = $('#ans'); box.className = 'ans' + (o.length === 3 ? ' n3' : '') + (grade >= 4 ? ' hi' : ''); box.innerHTML = '';
+  for (const v of o) { const b = document.createElement('button');
+    if (typeof v === 'object') { b.innerHTML = `<span>${v.h}</span>`; b.dataset.v = v.k; b.onclick = () => answer(b, v.k); }
+    else { b.textContent = N(v); b.dataset.v = v; b.onclick = () => answer(b, v); }
+    box.appendChild(b); fitText(b.firstChild && b.firstChild.nodeType === 1 ? b.firstChild : null, b); }
+  fitText($('#qbody').querySelector('.eq'), $('#qbody'));
 }
+// long expressions shrink until they fit their box (grades 4–9 can be wider than "7 + 5")
+function fitText(el, box) { if (!el || !box) return; el.style.fontSize = '';
+  const block = getComputedStyle(el).display === 'block';
+  const over = () => block ? el.scrollWidth > el.clientWidth + 1 : el.offsetWidth > box.clientWidth - 20;   // measure the TEXT, not its box
+  let fs = parseFloat(getComputedStyle(el).fontSize);
+  for (let i = 0; i < 30 && over() && fs > 14; i++) { fs *= .92; el.style.fontSize = fs + 'px'; } }
 function answer(btn, v) {
   if (S.phase !== 'play') return;
   initAudio();
-  if (v === S.q.ans) {
+  if (String(v) === String(S.q.ans)) {
     beep(true); btn.classList.add('right'); S.wrongRun = 0; S.streak++; S.cur++;
     say(pick(t('good')), true);
-    if (S.streak >= 6 && levels[grade] < 3) { levels[grade]++; store.set('levels', levels); S.streak = 0; updateTop(); }
+    if (S.streak >= 6 && (levels[grade] || 1) < 3) { levels[grade] = (levels[grade] || 1) + 1; store.set('levels', levels); S.streak = 0; updateTop(); }
     if (S.mode === 'draw') S.progTo = S.cur >= S.steps ? S.fine.length - 1 : S.dots[S.cur].fi;
     else { S.dropFrom = S.shown; S.shown = Math.round(S.model.cubes.length * S.cur / S.steps); S.dropT0 = performance.now(); }
     $('#qbar').style.width = (S.cur / S.steps * 100) + '%';
@@ -425,7 +635,7 @@ function renderAlbum() {
 function updateTop() {
   const tot = Object.values(stars).reduce((a, b) => a + b, 0);
   $('#pStars').textContent = `★ ${N(tot)}`;
-  $('#pLevel').textContent = `${t('gradeShort')(N(grade))} · ${t('level')(N(levels[grade]))}`;
+  $('#pLevel').textContent = `${t('gradeShort')(N(grade))} · ${t('level')(N(levels[grade] || 1))}`;
   $('#sndBtn').textContent = sound ? '🔊' : '🔇';
   $('#digBtn').textContent = digitsAr ? '١٢٣' : '123'; $('#digBtn').style.display = lang === 'ar' ? '' : 'none';
 }
@@ -449,7 +659,7 @@ $('#sndBtn').onclick = () => { sound = !sound; store.set('sound', sound); update
 $('#digBtn').onclick = () => { digitsAr = !digitsAr; store.set('digitsAr', digitsAr); updateTop(); if (S.phase === 'play') nextQ(); };
 addEventListener('resize', () => { if (S.mode) layout(); });
 applyLang(); requestAnimationFrame(frame);
-window.__SD = { S, start: id => startDraw(byId(id)), setGrade: g => { grade = g; }, right: () => { const b = document.querySelector(`#ans button[data-v="${S.q.ans}"]`); if (b && !b.disabled) b.click(); } };   // for testing
+window.__SD = { S, gen, options, setLang: l => { lang = l; }, setDig: d => { digitsAr = d; }, start: id => startDraw(byId(id)), setGrade: g => { grade = g; }, right: () => { const b = document.querySelector(`#ans button[data-v="${S.q.ans}"]`); if (b && !b.disabled) b.click(); } };   // for testing
 PICS.forEach(p => img(p.id));                              // warm the image cache
 if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
 // test hooks: #draw=falcon&g=2  |  #build=mia  |  #reveal=dhow  |  #lang=ar

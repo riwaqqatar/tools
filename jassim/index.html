@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>قرعة جاسم · Jassim's Draw — Riwaq</title>
+<meta name="description" content="Free classroom name picker: Jassim draws a student's name from the bowl and calls it out. Arabic + English. Works offline.">
+<link rel="icon" href="img/riwaq-logo.png">
+<style>
+@font-face{font-family:GE;src:url(fonts/GB_fix.otf);font-weight:700}
+@font-face{font-family:GE;src:url(fonts/GL_fix.otf);font-weight:300}
+@font-face{font-family:GS;src:url(fonts/GSB.woff2);font-weight:700}
+@font-face{font-family:GS;src:url(fonts/GSM.woff2);font-weight:500}
+:root{
+  --wall:#DCE6EC; --wall2:#C9D8E2; --ink:#16181D; --blue:#2563EB; --yellow:#FFCF33;
+  --paper:#FFFDF7; --muted:#5B6672; --line:rgba(22,24,29,.14); --red:#E5484D;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;background:var(--wall);color:var(--ink);font-family:GE,GS,system-ui,sans-serif}
+html[lang=en] body{font-family:GS,GE,system-ui,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+
+/* ---------- stage ---------- */
+#stage{position:fixed;inset:0;overflow:hidden}
+#wall{position:absolute;inset:0;background:
+  radial-gradient(120% 80% at 30% 20%, #E7EFF4 0%, var(--wall) 55%, var(--wall2) 100%)}
+#wall:after{content:"";position:absolute;inset:0;opacity:.35;mix-blend-mode:multiply;
+  background-image:repeating-linear-gradient(90deg,transparent 0 46px,rgba(37,99,235,.06) 46px 47px)}
+#jas{position:absolute;transform-origin:50% 100%;will-change:transform;user-select:none;-webkit-user-drag:none;pointer-events:auto}
+#jas.pop{animation:pop .22s ease-out}
+@keyframes pop{0%{transform:scale(1,1)}40%{transform:scale(1.025,.975)}100%{transform:scale(1,1)}}
+#fx{position:absolute;inset:0;pointer-events:none}
+
+/* ---------- header ---------- */
+#top{position:fixed;top:0;inset-inline:0;display:flex;align-items:flex-start;justify-content:space-between;padding:18px 22px;pointer-events:none;z-index:5}
+#brand{pointer-events:auto}
+#brand h1{font-family:GE;font-weight:700;font-size:clamp(30px,4vw,54px);line-height:.95;letter-spacing:-.5px}
+html[lang=en] #brand h1{font-family:GS;letter-spacing:-1.5px}
+#brand .sub{font:500 11px/1.4 GS,monospace;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-top:8px;display:flex;gap:10px;align-items:center}
+#brand .sub b{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue)}
+#tools{display:flex;gap:8px;pointer-events:auto}
+.ib{height:40px;min-width:40px;padding:0 12px;border-radius:20px;background:rgba(255,255,255,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;gap:6px;font:700 14px GS,GE;border:1px solid var(--line)}
+.ib:hover{background:#fff}
+.ib svg{width:18px;height:18px}
+.ib.off{opacity:.45}
+
+/* ---------- side: counter + draw button ---------- */
+#side{position:fixed;z-index:4;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+#count{font:500 12px/1.3 GS,monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+#count big{display:block;font:700 64px/1 GS;letter-spacing:-2px;color:var(--ink)}
+html[lang=ar] #count big{font-family:GE}
+#count .cls{display:inline-block;margin-top:6px;padding:3px 9px;border-radius:10px;background:var(--ink);color:#fff;letter-spacing:1px}
+#drawBtn{white-space:nowrap;position:relative;padding:18px 34px 18px 30px;border-radius:999px;background:var(--blue);color:#fff;font:700 26px GE,GS;box-shadow:0 6px 0 #1743A8,0 14px 30px rgba(37,99,235,.35);transition:transform .08s,box-shadow .08s;display:flex;align-items:center;gap:12px}
+html[lang=en] #drawBtn{font-family:GS}
+#drawBtn:active{transform:translateY(5px);box-shadow:0 1px 0 #1743A8,0 6px 16px rgba(37,99,235,.3)}
+#drawBtn[disabled]{background:#8FA6CF;box-shadow:0 6px 0 #6F84AC;cursor:default}
+#drawBtn kbd{font:500 11px GS;opacity:.75;border:1px solid rgba(255,255,255,.5);border-radius:6px;padding:2px 6px}
+#hint{font-size:14px;color:var(--muted);max-width:260px;line-height:1.5}
+
+/* ---------- name card ---------- */
+#card{position:fixed;z-index:6;pointer-events:none;opacity:0;transform-origin:50% 0%}
+#card .sheet{position:relative;background:var(--paper);padding:34px 44px 30px;border-radius:4px;
+  box-shadow:0 1px 0 rgba(0,0,0,.05),0 24px 60px rgba(22,24,29,.22);
+  background-image:linear-gradient(90deg,transparent 49.6%,rgba(0,0,0,.05) 50%,transparent 50.4%),
+                   linear-gradient(0deg,transparent 49.4%,rgba(0,0,0,.045) 50%,transparent 50.6%)}
+#card .tape{position:absolute;top:-12px;left:50%;width:110px;height:26px;margin-left:-55px;background:rgba(255,207,51,.78);transform:rotate(-3deg)}
+#card .lbl{font:500 11px GS,monospace;letter-spacing:3px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;gap:20px}
+#card .nm{font-family:GE;font-weight:700;line-height:1.08;margin:14px 0 6px;white-space:nowrap;color:var(--ink)}
+#card .nm.lat{font-family:GS;letter-spacing:-1px}
+#card .uline{height:7px;background:var(--blue);border-radius:4px;transform-origin:right;transform:scaleX(0)}
+html[lang=en] #card .uline{transform-origin:left}
+#card.show{opacity:1;animation:unfold .55s cubic-bezier(.2,1.4,.4,1)}
+#card.show .uline{animation:ul .5s .35s forwards ease-out}
+@keyframes unfold{0%{opacity:0;transform:translateY(40px) scaleY(.08) rotate(-4deg)}60%{opacity:1}100%{transform:none}}
+@keyframes ul{to{transform:scaleX(1)}}
+
+/* ---------- drawn list ---------- */
+#drawn{position:fixed;z-index:4;bottom:16px;inset-inline:22px;display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+#drawn::-webkit-scrollbar{display:none}
+.tag{flex:0 0 auto;display:flex;align-items:center;gap:8px;padding:7px 12px 7px 9px;border-radius:6px;background:rgba(255,253,247,.94);font-size:15px;border:1px solid var(--line);box-shadow:0 2px 0 rgba(0,0,0,.05)}
+.tag i{font:700 11px GS;font-style:normal;background:var(--ink);color:#fff;border-radius:4px;padding:2px 6px}
+.tag.new{animation:tagin .45s ease-out}
+@keyframes tagin{from{transform:translateY(20px);opacity:0}}
+
+/* ---------- drawer (names) ---------- */
+#veil{position:fixed;inset:0;background:rgba(22,24,29,.35);z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+#veil.on{opacity:1;pointer-events:auto}
+#drawer{position:fixed;z-index:21;top:0;bottom:0;inset-inline-end:0;width:min(460px,100vw);background:var(--paper);transform:translateX(105%);transition:transform .28s cubic-bezier(.2,.9,.3,1);display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(0,0,0,.15)}
+html[dir=rtl] #drawer{transform:translateX(-105%)}
+html[dir] #drawer.on{transform:none}
+#drawer header{padding:22px 24px 10px;display:flex;justify-content:space-between;align-items:center}
+#drawer h2{font:700 26px GE,GS}
+html[lang=en] #drawer h2{font-family:GS}
+#drawer .body{padding:6px 24px 24px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:18px}
+.field label{display:block;font:500 11px GS,monospace;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select,input[type=text],textarea{font:inherit;font-size:16px;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;color:var(--ink);width:100%}
+textarea{min-height:240px;line-height:1.7;resize:vertical}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:1px}
+.btn{padding:10px 16px;border-radius:10px;border:1.5px solid var(--ink);font-weight:700;font-size:15px;background:#fff}
+.btn.main{background:var(--ink);color:#fff}
+.btn.blue{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.ghost{border-color:var(--line)}
+.sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.sw small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.tog{width:48px;height:28px;border-radius:14px;background:#C7CDD4;position:relative;flex:0 0 auto;transition:background .15s}
+.tog:after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:inset-inline-start .15s}
+.tog.on{background:var(--blue)}
+.tog.on:after{inset-inline-start:23px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{padding:8px 14px;font-weight:700;font-size:14px}
+.seg button.on{background:var(--ink);color:#fff}
+.note{font-size:13px;color:var(--muted);line-height:1.6}
+.warn{font-size:13px;color:#8A4B00;background:#FFF3D6;border-radius:8px;padding:8px 10px;line-height:1.6}
+#foot{font:500 11px GS;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;padding:14px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+#foot img{height:22px}
+
+/* ---------- empty bowl ---------- */
+#empty{position:fixed;z-index:6;display:none;background:var(--paper);border-radius:12px;padding:18px 20px;box-shadow:0 18px 50px rgba(0,0,0,.18);max-width:320px}
+#empty.on{display:block}
+#empty p{font-size:17px;margin-bottom:12px;line-height:1.5}
+
+@media (max-width:760px){
+  #top{padding:12px 14px}
+  #brand .sub{display:none}
+  #drawBtn{font-size:21px;padding:14px 24px}
+  #count big{font-size:44px}
+  #hint{display:none}
+  #drawBtn kbd{display:none}
+  body.carded #count{visibility:hidden}
+  .ib span{display:none}
+}
+@media (prefers-reduced-motion:reduce){#card.show{animation:none}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="wall"></div>
+  <img id="jas" alt="Jassim" draggable="false">
+  <canvas id="fx"></canvas>
+</div>
+
+<div id="top">
+  <div id="brand">
+    <h1 data-t="title">قرعة جاسم</h1>
+    <div class="sub"><b></b><span data-t="sub">RIWAQ · CLASSROOM TOOLS</span></div>
+  </div>
+  <div id="tools">
+    <button class="ib" id="bNames" title=""><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h10M4 18h13"/></svg><span data-t="names">الأسماء</span></button>
+    <button class="ib" id="bVoice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path class="w" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg></button>
+    <button class="ib" id="bLang">EN</button>
+    <button class="ib" id="bFull"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  </div>
+</div>
+
+<div id="side">
+  <div id="count"><span data-t="left">باقي في الطاسة</span><big id="nLeft">0</big><span class="cls" id="clsName"></span></div>
+  <button id="drawBtn"><span data-t="draw">اسحب اسم</span><kbd>SPACE</kbd></button>
+  <div id="hint" data-t="hint"></div>
+</div>
+
+<div id="card"><div class="sheet"><div class="tape"></div>
+  <div class="lbl"><span data-t="winner">الاسم</span><span id="cardNo">Nº 01</span></div>
+  <div class="nm" id="cardName"></div><div class="uline"></div></div></div>
+
+<div id="empty"><p data-t="emptyMsg"></p><div class="row"><button class="btn blue" id="bRefill" data-t="refill"></button><button class="btn ghost" id="bOpen2" data-t="names"></button></div></div>
+
+<div id="drawn"></div>
+
+<div id="veil"></div>
+<aside id="drawer" aria-hidden="true">
+  <header><h2 data-t="names">الأسماء</h2><button class="ib" id="bClose">✕</button></header>
+  <div class="body">
+    <div class="field">
+      <label data-t="class">الصف</label>
+      <div class="row"><select id="selClass" style="flex:1"></select>
+        <button class="btn ghost" id="bNewClass" data-t="newClass"></button>
+        <button class="btn ghost" id="bDelClass" title="">🗑</button></div>
+    </div>
+    <div class="field">
+      <label data-t="className">اسم الصف</label>
+      <input type="text" id="inClass" maxlength="24">
+    </div>
+    <div class="field">
+      <label data-t="list">الأسماء — اسم في كل سطر</label>
+      <textarea id="inNames" spellcheck="false"></textarea>
+      <p class="note" data-t="listNote"></p>
+    </div>
+    <div class="row"><button class="btn main" id="bSave" data-t="save"></button><button class="btn ghost" id="bReset" data-t="reset"></button></div>
+    <div>
+      <div class="sw"><div><b data-t="optRemove"></b><small data-t="optRemoveS"></small></div><button class="tog" id="tRemove"></button></div>
+      <div class="sw"><div><b data-t="optVoice"></b><small data-t="optVoiceS"></small></div><button class="tog" id="tVoice"></button></div>
+      <div class="sw"><div><b data-t="optSound"></b><small data-t="optSoundS"></small></div><button class="tog" id="tSound"></button></div>
+      <div class="sw"><div><b data-t="optSpeed"></b><small data-t="optSpeedS"></small></div>
+        <div class="seg"><button id="spShow" data-t="show"></button><button id="spQuick" data-t="quick"></button></div></div>
+      <div id="voiceWarn" class="warn" style="display:none"></div>
+    </div>
+    <p class="note" data-t="privacy"></p>
+  </div>
+  <div id="foot"><span>RIWAQ CULTURAL LAB</span><img src="img/riwaq-logo.png" alt="Riwaq"></div>
+</aside>
+
+<script>
+(()=>{
+'use strict';
+/* ================= words ================= */
+const T={
+ ar:{title:'قرعة جاسم',sub:'رواق · أدوات الصف',names:'الأسماء',left:'باقي في الطاسة',draw:'اسحب اسم',
+   hint:'اضغطوا الزر أو زر المسافة، وجاسم يسحب اسم من الطاسة ويناديه.',winner:'الاسم',class:'الصف',newClass:'+ صف جديد',
+   className:'اسم الصف',list:'الأسماء — اسم في كل سطر',listNote:'تقدرون تكتبون عربي أو إنجليزي، أو تلصقون القائمة كاملة من ملف.',
+   save:'حفظ',reset:'رجّع كل الأسماء للطاسة',optRemove:'الاسم يطلع من الطاسة',optRemoveS:'ما يتكرر نفس الاسم إلا بعد ما تخلص الأسماء',
+   optVoice:'جاسم ينادي الاسم',optVoiceS:'بصوت الجهاز، عربي أو إنجليزي حسب الاسم',optSound:'أصوات خفيفة',optSoundS:'طبلة وورق',
+   optSpeed:'السرعة',optSpeedS:'عرض كامل أو سحب سريع',show:'عرض',quick:'سريع',
+   emptyMsg:'الطاسة فاضية! كل الأسماء طلعت.',refill:'رجّع الأسماء',
+   privacy:'الأسماء تنحفظ على هذا الجهاز فقط، وما تنرسل لأي مكان.',
+   noAr:'جهازك ما فيه صوت عربي، فجاسم بيقرأ الأسماء العربية بصوت غير واضح. الاسم يبان على الشاشة دايمًا.',
+   noVoice:'جهازك ما فيه أصوات قراءة. الاسم يبان على الشاشة بس.',
+   delAsk:'تحذفون هذا الصف؟',firstClass:'صفي',newName:'صف جديد',sample:'جاسم\nحمد\nمريم\nنورة\nسلطان\nعلياء',
+   addFirst:'اكتبوا أسماء الطلاب أول.'},
+ en:{title:"Jassim's Draw",sub:'RIWAQ · CLASSROOM TOOLS',names:'Names',left:'left in the bowl',draw:'Draw a name',
+   hint:'Press the button or the spacebar. Jassim pulls a name from the bowl and calls it out.',winner:'And the name is',class:'Class',newClass:'+ New class',
+   className:'Class name',list:'Names — one per line',listNote:'Arabic or English both work. You can paste a whole list from a file.',
+   save:'Save',reset:'Put every name back in the bowl',optRemove:'Drawn names leave the bowl',optRemoveS:'No repeats until everyone has had a turn',
+   optVoice:'Jassim says the name',optVoiceS:'Uses the device voice, Arabic or English per name',optSound:'Soft sounds',optSoundS:'Drum roll and paper',
+   optSpeed:'Speed',optSpeedS:'Full show or quick draw',show:'Show',quick:'Quick',
+   emptyMsg:'The bowl is empty! Every name has been drawn.',refill:'Put names back',
+   privacy:'Names are saved on this device only and are never sent anywhere.',
+   noAr:'This device has no Arabic voice, so Arabic names may sound wrong. The name always shows on screen.',
+   noVoice:'This device has no reading voices. The name shows on screen only.',
+   delAsk:'Delete this class?',firstClass:'My class',newName:'New class',sample:'Jassim\nHamad\nMaryam\nNoora\nSultan\nAlya',
+   addFirst:'Add your students\' names first.'}
+};
+const $=s=>document.querySelector(s);
+const isAr=s=>/[؀-ۿ]/.test(s);
+const AD='٠١٢٣٤٥٦٧٨٩';
+const num=(n,l)=>l==='ar'?String(n).replace(/\d/g,d=>AD[d]):String(n);
+
+/* ================= state ================= */
+const KEY='riwaq.jassimDraw.v1';
+let S=null;
+function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
+  if(!S||!Array.isArray(S.classes)||!S.classes.length){
+    const l=(navigator.language||'ar').toLowerCase().startsWith('ar')?'ar':'en';
+    S={lang:l,cur:0,remove:true,voice:true,sound:true,speed:'show',
+       classes:[{name:T[l].firstClass,names:T[l].sample.split('\n'),drawn:[]}]};
+  }}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+load();
+const C=()=>S.classes[Math.min(S.cur,S.classes.length-1)];
+const pool=()=>{const c=C();return S.remove?c.names.filter((n,i)=>!c.drawn.includes(i)):c.names.map((n,i)=>i).map(i=>c.names[i]);};
+const poolIdx=()=>{const c=C();return c.names.map((n,i)=>i).filter(i=>!S.remove||!c.drawn.includes(i));};
+
+/* ================= language ================= */
+function applyLang(){
+  const L=T[S.lang];document.documentElement.lang=S.lang;document.documentElement.dir=S.lang==='ar'?'rtl':'ltr';
+  document.querySelectorAll('[data-t]').forEach(e=>{const v=L[e.dataset.t];if(v!=null)e.textContent=v});
+  $('#bLang').textContent=S.lang==='ar'?'EN':'ع';document.title=L.title+' — Riwaq';
+  refreshUI();layout();
+}
+
+/* ================= images ================= */
+const POSES=['wait_arms','mix','suspense','read','announce','drumroll','cheer','point','yawn'];
+const IMG={};
+const SRC=window.JIMG||{};
+POSES.forEach(p=>{const i=new Image();i.src=SRC[p]||('img/j_'+p+'.webp');IMG[p]=i});
+const jas=$('#jas');let pose='';
+function setPose(p,bounce=true){if(p===pose)return;pose=p;jas.src=IMG[p].src;if(bounce){jas.classList.remove('pop');void jas.offsetWidth;jas.classList.add('pop')}}
+setPose('wait_arms',false);
+
+/* ================= layout ================= */
+const cv=$('#fx'),cx=cv.getContext('2d');let W=0,H=0,DPR=1,G={};
+function layout(){
+  DPR=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';
+  const narrow=W<760;
+  let jh=narrow?Math.min(H*.78,W*1.25):Math.min(H*1.12,W*.52);const jw=jh*.75;
+  const jx=narrow?(W-jw)/2:(S.lang==='ar'?W*.56-jw/2:W*.44-jw/2);
+  const jy=narrow?H*.17:Math.max(H*.10,H*.70-jh*.68);   // desk top lands near 70% of the screen
+  jas.style.width=jw+'px';jas.style.height=jh+'px';jas.style.left=jx+'px';jas.style.top=jy+'px';
+  const deskY=Math.min(jy+jh*.68,H*.84);
+  const R=jw*.205, bx=jx+jw*.46, by=deskY-R*.80;
+  G={jx,jy,jw,jh,deskY,R,bx,by,narrow};
+  // side panel
+  const side=$('#side');
+  if(narrow){side.style.cssText=`left:0;right:0;bottom:64px;top:auto;align-items:center;padding:0 16px`;}
+  else{const sx=W*.06;side.style.cssText=`top:${H*.30}px;${S.lang==='ar'?'left':'right'}:auto;${S.lang==='ar'?'right':'left'}:${sx}px;bottom:auto;max-width:${Math.max(220,jx-sx-20)}px`;
+    side.style.alignItems='flex-start';}
+  placeCard();placeEmpty();
+  initSlips(false);
+}
+addEventListener('resize',layout);
+
+/* ================= paper slips (physics) ================= */
+const COLS=['#FFFFFF','#FFF4C2','#DCE8FF','#FFE0E6','#E3F4E6','#FFFFFF','#F3ECDD'];
+let slips=[];
+function initSlips(fresh){
+  const n=Math.min(42,Math.max(0,poolIdx().length));
+  if(fresh||slips.length!==n){
+    slips=[];for(let i=0;i<n;i++)slips.push(mkSlip(i));
+  }
+}
+function mkSlip(i){const a=Math.random()*Math.PI*2,r=Math.random()*.55;
+  return{x:Math.cos(a)*r,y:.25+Math.random()*.45,vx:0,vy:0,a:Math.random()*6.28,va:0,w:.24+Math.random()*.06,h:.12+Math.random()*.03,c:COLS[i%COLS.length],f:Math.random()<.5}}
+let shake=0,swirl=0,lifting=null;
+function stepSlips(dt){
+  // coordinates are in bowl units: x in [-1,1], y in [-1,1] (down +). Bowl is a circle radius 1, open above y<-.62
+  for(const s of slips){
+    s.vy+=2.6*dt; // gravity
+    if(shake>0){s.vx+=(Math.random()-.5)*shake*14*dt;s.vy-=Math.random()*shake*9*dt;s.va+=(Math.random()-.5)*shake*30*dt}
+    if(swirl>0){const ang=Math.atan2(s.y,s.x);s.vx+=-Math.sin(ang)*swirl*7*dt;s.vy+=Math.cos(ang)*swirl*7*dt-swirl*2.5*dt;s.va+=swirl*9*dt}
+    s.vx*=Math.pow(.25,dt);s.vy*=Math.pow(.35,dt);s.va*=Math.pow(.2,dt);
+    s.x+=s.vx*dt;s.y+=s.vy*dt;s.a+=s.va*dt;
+    const lim=.86,d=Math.hypot(s.x,s.y);
+    if(d>lim&&s.y>-.55){const k=lim/d;s.x*=k;s.y*=k;const nx=s.x/lim,ny=s.y/lim,vn=s.vx*nx+s.vy*ny;if(vn>0){s.vx-=1.5*vn*nx;s.vy-=1.5*vn*ny}}
+    if(s.y<-.55&&Math.abs(s.x)>.62){s.x=Math.sign(s.x)*.62;s.vx*=-.5}
+    if(s.y<-.9){s.y=-.9;s.vy=Math.abs(s.vy)*.3}
+  }
+  // light separation so they pile instead of overlapping into one
+  for(let i=0;i<slips.length;i++)for(let j=i+1;j<slips.length;j++){const a=slips[i],b=slips[j];const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=.15;
+    if(d<m&&d>1e-4){const p=(m-d)*.5/d;a.x-=dx*p;a.y-=dy*p;b.x+=dx*p;b.y+=dy*p}}
+}
+
+/* ================= drawing: desk, bowl, slips, confetti ================= */
+let grain=null;
+function makeGrain(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');
+  const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#C98E57');gr.addColorStop(.06,'#B9784A');gr.addColorStop(1,'#9C603A');g.fillStyle=gr;g.fillRect(0,0,w,h);
+  g.globalAlpha=.22;g.strokeStyle='#6E3F22';
+  for(let i=0;i<70;i++){const y=Math.random()*h;g.lineWidth=.6+Math.random()*1.6;g.beginPath();g.moveTo(0,y);
+    for(let x=0;x<=w;x+=40)g.lineTo(x,y+Math.sin(x*.004+i)*6+Math.sin(x*.02+i*3)*1.5);g.stroke()}
+  g.globalAlpha=.10;g.fillStyle='#fff';g.fillRect(0,0,w,Math.max(3,h*.035));
+  return c}
+function draw(t){
+  const g=cx;g.setTransform(DPR,0,0,DPR,0,0);g.clearRect(0,0,W,H);
+  const {deskY,R,bx,by}=G;
+  // shadow of jassim on wall is skipped: flat editorial light
+  // desk
+  if(!grain||grain.width!==Math.ceil(W)||grain.height!==Math.ceil(H-deskY+2))grain=makeGrain(Math.ceil(W),Math.ceil(H-deskY+2));
+  g.drawImage(grain,0,deskY);
+  g.fillStyle='rgba(0,0,0,.18)';g.fillRect(0,deskY+Math.max(10,(H-deskY)*.12),W,2);
+  // bowl shadow
+  g.save();g.fillStyle='rgba(60,30,10,.28)';g.beginPath();g.ellipse(bx,deskY+R*.06,R*.82,R*.13,0,0,7);g.fill();g.restore();
+  // bowl back glass
+  g.save();g.translate(bx,by);
+  const rimY=-R*.62,rimRx=R*.66,rimRy=R*.12;
+  g.fillStyle='rgba(210,232,246,.28)';bowlPath(g,R);g.fill();
+  // back rim
+  g.strokeStyle='rgba(120,160,190,.55)';g.lineWidth=Math.max(1.5,R*.025);g.beginPath();g.ellipse(0,rimY,rimRx,rimRy,0,Math.PI,2*Math.PI);g.stroke();
+  // slips
+  for(const s of slips){if(s===lifting)continue;drawSlip(g,s,R)}
+  // front glass: gradient body + highlights
+  const lg=g.createLinearGradient(-R,0,R,0);lg.addColorStop(0,'rgba(255,255,255,.30)');lg.addColorStop(.25,'rgba(255,255,255,.05)');lg.addColorStop(.7,'rgba(180,210,230,.08)');lg.addColorStop(1,'rgba(120,160,190,.30)');
+  g.fillStyle=lg;bowlPath(g,R);g.fill();
+  g.strokeStyle='rgba(110,150,180,.65)';g.lineWidth=Math.max(1.5,R*.02);bowlPath(g,R);g.stroke();
+  g.strokeStyle='rgba(255,255,255,.85)';g.lineWidth=R*.05;g.lineCap='round';g.beginPath();g.arc(0,0,R*.82,Math.PI*.78,Math.PI*1.08);g.stroke();
+  g.lineWidth=R*.025;g.beginPath();g.arc(0,0,R*.82,Math.PI*1.13,Math.PI*1.18);g.stroke();
+  g.strokeStyle='rgba(255,255,255,.5)';g.lineWidth=R*.03;g.beginPath();g.arc(0,0,R*.7,Math.PI*.08,Math.PI*.3);g.stroke();
+  // front rim
+  g.strokeStyle='rgba(120,160,190,.8)';g.lineWidth=Math.max(2,R*.03);g.beginPath();g.ellipse(0,rimY,rimRx,rimRy,0,0,Math.PI);g.stroke();
+  g.strokeStyle='rgba(255,255,255,.9)';g.lineWidth=Math.max(1,R*.012);g.beginPath();g.ellipse(0,rimY-1,rimRx*.96,rimRy*.8,0,.2,Math.PI-.2);g.stroke();
+  g.restore();
+  // lifting slip (flies to the hand)
+  if(lifting&&lifting.fly){const f=lifting.fly,k=Math.min(1,(t-f.t0)/f.d),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    const x=f.x0+(f.x1-f.x0)*e,y=f.y0+(f.y1-f.y0)*e-Math.sin(e*Math.PI)*R*.6;
+    g.save();g.translate(x,y);g.rotate(lifting.a+e*6);drawSlipAt(g,lifting,R*1.1);g.restore();if(k>=1)lifting.fly=null}
+  // confetti
+  for(const p of conf){g.save();g.translate(p.x,p.y);g.rotate(p.a);g.fillStyle=p.c;g.fillRect(-p.s/2,-p.s*.3,p.s,p.s*.6);g.restore()}
+}
+function bowlPath(g,R){g.beginPath();const a0=-Math.asin(.62);g.arc(0,0,R,a0,Math.PI-a0,false);g.closePath()}
+function drawSlip(g,s,R){g.save();g.translate(s.x*R,s.y*R);g.rotate(s.a);drawSlipAt(g,s,R);g.restore()}
+function drawSlipAt(g,s,R){const w=s.w*R*1.15,h=s.h*R*1.15;
+  g.fillStyle='rgba(0,0,0,.10)';g.fillRect(-w/2+1.5,-h/2+1.5,w,h);
+  g.fillStyle=s.c;g.fillRect(-w/2,-h/2,w,h);
+  g.strokeStyle='rgba(22,24,29,.25)';g.lineWidth=1;g.strokeRect(-w/2,-h/2,w,h);
+  g.strokeStyle='rgba(22,24,29,.16)';g.beginPath();if(s.f){g.moveTo(0,-h/2);g.lineTo(0,h/2)}else{g.moveTo(-w/2,0);g.lineTo(w/2,0)}g.stroke()}
+
+/* confetti */
+let conf=[];
+function burst(x,y,n=70){for(let i=0;i<n;i++){const a=-Math.PI/2+(Math.random()-.5)*2.2,v=300+Math.random()*520;
+  conf.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,a:Math.random()*6,va:(Math.random()-.5)*14,s:6+Math.random()*9,
+  c:['#2563EB','#FFCF33','#E5484D','#16181D','#FFFFFF','#8A1538'][i%6],life:2.6+Math.random()})}}
+function stepConf(dt){for(const p of conf){p.vy+=900*dt;p.vx*=Math.pow(.4,dt);p.x+=p.vx*dt;p.y+=p.vy*dt;p.a+=p.va*dt;p.life-=dt}conf=conf.filter(p=>p.life>0&&p.y<H+40)}
+
+/* ================= loop ================= */
+let last=performance.now();
+function frame(now){const dt=Math.min(.05,(now-last)/1000);last=now;
+  shake=Math.max(0,shake-dt*.0);stepSlips(dt);stepConf(dt);draw(now);requestAnimationFrame(frame)}
+requestAnimationFrame(frame);
+
+/* ================= sound (WebAudio, no files) ================= */
+let AC=null;
+function ac(){if(!AC){try{AC=new (window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+function noise(dur,gain,freq,q=1,when=0){const a=ac();if(!a||!S.sound)return;const t=a.currentTime+when;
+  const b=a.createBuffer(1,Math.ceil(a.sampleRate*dur),a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const s=a.createBufferSource();s.buffer=b;const f=a.createBiquadFilter();f.type='bandpass';f.frequency.value=freq;f.Q.value=q;
+  const g=a.createGain();g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);s.connect(f);f.connect(g);g.connect(a.destination);s.start(t)}
+function drumroll(sec){for(let k=0;k<sec*22;k++){noise(.06,.10+.10*(k/(sec*22)),180+Math.random()*60,.9,k/22)}}
+function rustle(){for(let k=0;k<5;k++)noise(.05,.05,2600+Math.random()*1500,.7,k*.04)}
+function tada(){const a=ac();if(!a||!S.sound)return;[[523.25,0],[659.25,.12],[783.99,.24],[1046.5,.36]].forEach(([f,w])=>{const o=a.createOscillator(),g=a.createGain();o.type='triangle';o.frequency.value=f;
+  const t=a.currentTime+w;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.12,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.6);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.65)})}
+
+/* ================= voice ================= */
+let voices=[];
+function loadVoices(){try{voices=speechSynthesis.getVoices()||[]}catch(e){voices=[]}checkVoices()}
+if('speechSynthesis' in window){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}
+function pickVoice(ar){const want=ar?'ar':'en';const v=voices.filter(v=>(v.lang||'').toLowerCase().startsWith(want));
+  return v.find(v=>/natural|online|google|neural/i.test(v.name))||v[0]||null}
+function say(name){if(!S.voice||!('speechSynthesis' in window))return;try{speechSynthesis.cancel();
+  const ar=isAr(name);const u=new SpeechSynthesisUtterance(name);const v=pickVoice(ar);if(v)u.voice=v;u.lang=v?v.lang:(ar?'ar-SA':'en-US');u.rate=.86;u.pitch=1.15;speechSynthesis.speak(u)}catch(e){}}
+function checkVoices(){const w=$('#voiceWarn');if(!w)return;const L=T[S.lang];
+  if(!('speechSynthesis' in window)||!voices.length){w.textContent=L.noVoice;w.style.display=voices.length||!('speechSynthesis' in window)?'block':'none';return}
+  const hasAr=voices.some(v=>(v.lang||'').toLowerCase().startsWith('ar'));const anyAr=C().names.some(isAr);
+  w.textContent=L.noAr;w.style.display=(!hasAr&&anyAr)?'block':'none'}
+
+/* ================= card ================= */
+const card=$('#card');
+function placeCard(){const {narrow,jx,jw,jy,jh}=G;if(!jw)return;
+  if(narrow){card.style.width=(W-32)+'px';card.style.left='16px';card.style.top=(G.deskY-24)+'px';return}
+  // the card lives beside Jassim, on the side away from the panel; it may tuck into his transparent margin only
+  if(S.lang==='ar'){const right=jx+jw*.07,w=Math.min(640,right-24);card.style.width=w+'px';card.style.left=(right-w)+'px'}
+  else{const left=jx+jw*.8,w=Math.min(640,W-24-left);card.style.width=w+'px';card.style.left=left+'px'}
+  card.style.top=(H*.30)+'px'}
+function showCard(name,no){const n=$('#cardName');n.textContent=name;n.classList.toggle('lat',!isAr(name));n.dir=isAr(name)?'rtl':'ltr';
+  $('#cardNo').textContent='Nº '+String(no).padStart(2,'0');
+  card.classList.remove('show');void card.offsetWidth;card.classList.add('show');document.body.classList.add('carded');
+  const avail=card.clientWidth-88;let fs=Math.min(140,G.narrow?84:Math.max(60,card.clientWidth*.22));n.style.fontSize=fs+'px';
+  while(n.scrollWidth>avail&&fs>28){fs-=4;n.style.fontSize=fs+'px'}}
+function hideCard(){card.classList.remove('show');document.body.classList.remove('carded');card.style.opacity=0;setTimeout(()=>card.style.opacity='',30)}
+
+/* ================= empty ================= */
+const emp=$('#empty');
+function placeEmpty(){const {bx,by,R}=G;if(!R)return;emp.style.left=Math.max(12,Math.min(W-332,bx-160))+'px';emp.style.top=Math.max(80,by-R*2.4)+'px'}
+
+/* ================= UI refresh ================= */
+function refreshUI(){const L=T[S.lang],c=C(),left=poolIdx().length;
+  $('#nLeft').textContent=num(left,S.lang);$('#clsName').textContent=c.name;
+  $('#drawBtn').disabled=busy;$('#bVoice').classList.toggle('off',!S.voice);
+  const dr=$('#drawn');dr.innerHTML='';c.drawn.slice().reverse().forEach((i,k)=>{const n=c.names[i];if(n==null)return;
+    const d=document.createElement('div');d.className='tag'+(k===0&&fresh?' new':'');d.dir=isAr(n)?'rtl':'ltr';
+    d.innerHTML='<i>'+String(c.drawn.length-k).padStart(2,'0')+'</i>';d.appendChild(document.createTextNode(n));dr.appendChild(d)});
+  fresh=false;checkVoices()}
+let fresh=false;
+
+/* ================= the draw ================= */
+let busy=false,idleT=0,timers=[];
+const at=(ms,f)=>timers.push(setTimeout(f,ms));
+function drawName(){
+  if(busy)return;const L=T[S.lang],c=C();
+  if(!c.names.length){openDrawer();return}
+  const idx=poolIdx();if(!idx.length){emp.classList.add('on');setPose('wait_arms');return}
+  emp.classList.remove('on');busy=true;refreshUI();hideCard();bumpIdle();
+  const pick=idx[Math.floor(cryptoRand()*idx.length)];const name=c.names[pick];
+  const quick=S.speed==='quick';const k=quick?.38:1;
+  ac();
+  setPose('drumroll');shake=.9;drumroll(1.3*k);
+  at(1300*k,()=>{shake=0;setPose('mix');swirl=1.4;rustle()});
+  at(2350*k,()=>{swirl=0;// lift a slip out of the bowl to his raised hand
+    const s=slips[Math.floor(Math.random()*slips.length)];
+    if(s){lifting=s;const {bx,by,R,jx,jy,jw,jh}=G;s.fly={t0:performance.now(),d:420*Math.max(.6,k),x0:bx+s.x*R,y0:by+s.y*R,x1:jx+jw*.25,y1:jy+jh*.04}}
+    rustle()});
+  at(2350*k+420*Math.max(.6,k),()=>{setPose('suspense');if(lifting){slips=slips.filter(x=>x!==lifting);lifting=null}});
+  at(3300*k+200,()=>{setPose('read');rustle()});
+  at(4050*k+300,()=>{
+    setPose('announce');c.drawn.push(pick);if(!S.remove){/* keep in pool */}
+    showCard(name,c.drawn.length);tada();say(name);fresh=true;
+    const r=card.getBoundingClientRect();burst(r.left+r.width/2,r.top+30,G.narrow?50:80);
+    if(!S.remove){c.drawn=c.drawn.slice(-60)}save();refreshUI();
+  });
+  at(4050*k+1900,()=>{setPose('cheer')});
+  at(4050*k+3600,()=>{setPose('wait_arms');busy=false;initSlips(false);refreshUI();
+    if(!poolIdx().length&&S.remove)setTimeout(()=>emp.classList.add('on'),600)});
+}
+function cryptoRand(){try{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0]/4294967296}catch(e){return Math.random()}}
+
+/* idle: yawn when the class keeps him waiting; point when hovered */
+function bumpIdle(){idleT=performance.now()}
+bumpIdle();
+setInterval(()=>{if(busy||document.hidden)return;const s=(performance.now()-idleT)/1000;
+  if(s>28&&pose==='wait_arms'){setPose('yawn');setTimeout(()=>{if(!busy&&pose==='yawn')setPose('wait_arms')},2600);bumpIdle()}},1000);
+jas.addEventListener('pointerenter',()=>{if(!busy&&pose==='wait_arms'){setPose('point');setTimeout(()=>{if(!busy&&pose==='point')setPose('wait_arms')},1400)}});
+
+/* ================= drawer ================= */
+const drawer=$('#drawer'),veil=$('#veil');
+function openDrawer(){fillDrawer();drawer.classList.add('on');veil.classList.add('on');drawer.setAttribute('aria-hidden','false');setTimeout(()=>$('#inNames').focus(),250)}
+function closeDrawer(){drawer.classList.remove('on');veil.classList.remove('on');drawer.setAttribute('aria-hidden','true')}
+function fillDrawer(){const sel=$('#selClass');sel.innerHTML='';S.classes.forEach((c,i)=>{const o=document.createElement('option');o.value=i;o.textContent=c.name+'  ('+c.names.length+')';sel.appendChild(o)});
+  sel.value=S.cur;$('#inClass').value=C().name;$('#inNames').value=C().names.join('\n');
+  $('#tRemove').classList.toggle('on',S.remove);$('#tVoice').classList.toggle('on',S.voice);$('#tSound').classList.toggle('on',S.sound);
+  $('#spShow').classList.toggle('on',S.speed==='show');$('#spQuick').classList.toggle('on',S.speed==='quick');checkVoices()}
+function saveDrawer(){const c=C();const names=$('#inNames').value.split(/\r?\n|[,،;؛]/).map(s=>s.replace(/\s+/g,' ').trim()).filter(Boolean);
+  const changed=names.join('|')!==c.names.join('|');c.names=names;c.name=($('#inClass').value.trim()||c.name);
+  if(changed)c.drawn=[];save();initSlips(true);fillDrawer();refreshUI();emp.classList.remove('on')}
+$('#bNames').onclick=openDrawer;$('#bOpen2').onclick=()=>{emp.classList.remove('on');openDrawer()};$('#bClose').onclick=()=>{saveDrawer();closeDrawer()};veil.onclick=()=>{saveDrawer();closeDrawer()};
+$('#bSave').onclick=()=>{saveDrawer();closeDrawer()};
+$('#selClass').onchange=e=>{saveDrawer();S.cur=+e.target.value;save();fillDrawer();initSlips(true);refreshUI();hideCard()};
+$('#bNewClass').onclick=()=>{saveDrawer();S.classes.push({name:T[S.lang].newName+' '+(S.classes.length+1),names:[],drawn:[]});S.cur=S.classes.length-1;save();fillDrawer();initSlips(true);refreshUI();$('#inClass').select()};
+$('#bDelClass').onclick=()=>{if(S.classes.length<2){C().names=[];C().drawn=[];}else if(confirm(T[S.lang].delAsk)){S.classes.splice(S.cur,1);S.cur=0}save();fillDrawer();initSlips(true);refreshUI()};
+$('#bReset').onclick=()=>{refill();fillDrawer()};
+function refill(){C().drawn=[];save();initSlips(true);for(const s of slips){s.y=-1.6-Math.random()*1.2;s.vy=0}refreshUI();emp.classList.remove('on');hideCard();rustle()}
+$('#bRefill').onclick=refill;
+const tog=(id,k)=>$(id).onclick=()=>{S[k]=!S[k];save();fillDrawer();refreshUI();if(k==='remove')initSlips(true)};
+tog('#tRemove','remove');tog('#tVoice','voice');tog('#tSound','sound');
+$('#spShow').onclick=()=>{S.speed='show';save();fillDrawer()};$('#spQuick').onclick=()=>{S.speed='quick';save();fillDrawer()};
+
+/* ================= top buttons + keys ================= */
+$('#drawBtn').onclick=drawName;
+$('#bVoice').onclick=()=>{S.voice=!S.voice;save();refreshUI();if(S.voice)say(S.lang==='ar'?'هلا':'Hello')};
+$('#bLang').onclick=()=>{S.lang=S.lang==='ar'?'en':'ar';save();applyLang()};
+$('#bFull').onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}};
+addEventListener('keydown',e=>{if(drawer.classList.contains('on')){if(e.key==='Escape'){saveDrawer();closeDrawer()}return}
+  if(e.code==='Space'||e.key==='Enter'){e.preventDefault();drawName()}else if(e.key==='f'||e.key==='F')$('#bFull').click();bumpIdle()});
+addEventListener('pointerdown',bumpIdle);
+
+applyLang();
+if(!C().names.length)setTimeout(openDrawer,400);
+// test hooks: #draw runs one draw, #names opens the list
+if(location.hash==='#draw'||location.hash==='#shot')setTimeout(drawName,600);
+if(location.hash==='#shot'){const st=document.createElement('style');st.textContent='*{animation-duration:0s!important;animation-delay:0s!important}';document.head.appendChild(st)}
+if(location.hash==='#names')setTimeout(openDrawer,300);
+})();
+</script>
+</body>
+</html>

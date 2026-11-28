@@ -1,5 +1,5 @@
 // Solve & Draw: works offline after the first visit. Pages: network first (so updates arrive), files: cache first.
-const V = 'solvedraw-v1';
+const V = 'solvedraw-v2';
 self.addEventListener('install', e => { self.skipWaiting(); });
 self.addEventListener('activate', e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener('fetch', e => {
